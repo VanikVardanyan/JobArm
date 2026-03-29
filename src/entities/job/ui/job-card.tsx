@@ -27,6 +27,11 @@ type Props = {
   job: DbJob;
   locale: Locale;
   urgentLabel: string;
+  titleLabel: string;
+  budgetLabel: string;
+  descriptionLabel: string;
+  addressLabel: string;
+  regionLabel: string;
   callLabel: string;
   telegramLabel: string;
   whatsappLabel: string;
@@ -82,6 +87,11 @@ export function JobCard({
   job,
   locale,
   urgentLabel,
+  titleLabel,
+  budgetLabel,
+  descriptionLabel,
+  addressLabel,
+  regionLabel,
   callLabel,
   telegramLabel,
   whatsappLabel,
@@ -154,10 +164,18 @@ export function JobCard({
           </span>
         </div>
 
-        <h2 className="text-base font-semibold leading-7">{job.title}</h2>
+        <div className="flex flex-col gap-1">
+          <span className={cn("text-xs font-semibold uppercase tracking-[0.12em]", ui.textMuted)}>
+            {titleLabel}
+          </span>
+          <h2 className="text-base font-semibold leading-7">{job.title}</h2>
+        </div>
 
         {rawDescription.length > 0 && (
           <div className="flex flex-col gap-2">
+            <span className={cn("text-xs font-semibold uppercase tracking-[0.12em]", ui.textMuted)}>
+              {descriptionLabel}
+            </span>
             <p
               ref={descriptionRef}
               className={cn(
@@ -180,12 +198,27 @@ export function JobCard({
           </div>
         )}
 
-        <div className={cn("flex flex-wrap gap-x-4 gap-y-1 text-sm", ui.textMuted)}>
+        <div className="flex flex-col gap-2 text-sm">
           {job.price && (
-            <span className="font-medium text-[color:var(--foreground)]">{job.price}</span>
+            <div className="flex flex-wrap items-baseline gap-2">
+              <span className={cn("text-xs font-semibold uppercase tracking-[0.12em]", ui.textMuted)}>
+                {budgetLabel}
+              </span>
+              <span className="font-medium text-[color:var(--foreground)]">{job.price}</span>
+            </div>
           )}
-          <span>{regLabel}</span>
-          <span>{job.address}</span>
+          <div className="flex flex-wrap items-baseline gap-2">
+            <span className={cn("text-xs font-semibold uppercase tracking-[0.12em]", ui.textMuted)}>
+              {regionLabel}
+            </span>
+            <span className={ui.textMuted}>{regLabel}</span>
+          </div>
+          <div className="flex flex-wrap items-baseline gap-2">
+            <span className={cn("text-xs font-semibold uppercase tracking-[0.12em]", ui.textMuted)}>
+              {addressLabel}
+            </span>
+            <span className={ui.textMuted}>{job.address}</span>
+          </div>
         </div>
 
         {job.author.name && (

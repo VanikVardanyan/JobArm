@@ -160,6 +160,11 @@ export default async function JobsPage({ params, searchParams }: JobsPageProps) 
               job={job}
               locale={locale}
               urgentLabel={d.common.urgent}
+              titleLabel={d.jobs.titleLabel}
+              budgetLabel={d.jobs.budgetLabel}
+              descriptionLabel={d.jobs.descriptionLabel}
+              addressLabel={d.jobs.addressLabel}
+              regionLabel={d.jobs.regionLabel}
               callLabel={d.jobs.callButton}
               telegramLabel={d.jobs.contactTelegram}
               whatsappLabel={d.jobs.contactWhatsApp}

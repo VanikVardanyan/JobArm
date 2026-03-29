@@ -96,7 +96,10 @@ export function EditJobForm({ job, locale, postT, dashT }: Props) {
 
     if (!res.ok) { setServerError(dashT.updateError); return; }
     setSuccess(true);
-    setTimeout(() => router.push(routes.dashboard(locale)), 1200);
+    setTimeout(() => {
+      router.push(routes.dashboard(locale));
+      router.refresh();
+    }, 1200);
   }
 
   function fieldClass(hasError: boolean) {

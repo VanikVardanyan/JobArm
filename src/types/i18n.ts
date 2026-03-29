@@ -83,6 +83,11 @@ export type TranslationTree = {
     emptyHint: string;
     empty: string;
     emptyFiltered: string;
+    titleLabel: string;
+    budgetLabel: string;
+    descriptionLabel: string;
+    addressLabel: string;
+    regionLabel: string;
     callButton: string;
     contactTelegram: string;
     contactWhatsApp: string;
