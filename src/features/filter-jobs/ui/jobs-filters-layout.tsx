@@ -70,7 +70,7 @@ export function JobsFiltersLayout({
             <Drawer.Title className="sr-only">{filtersTitle}</Drawer.Title>
             <Drawer.Handle className="mx-auto mb-4 h-1.5 w-12 shrink-0 rounded-full bg-[color:var(--border)]" />
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
-              <JobFilters {...filterProps} />
+              <JobFilters {...filterProps} onApplied={() => setDrawerOpen(false)} />
             </div>
           </Drawer.Content>
         </Drawer.Portal>

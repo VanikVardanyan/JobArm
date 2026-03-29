@@ -3,7 +3,7 @@ import type { TranslationTree } from "@/types/i18n";
 /** فارسی (پارسی) */
 export const dictionaryFa: TranslationTree = {
   common: {
-    productName: "jobNow",
+    productName: "jobArm",
     createTask: "ایجاد درخواست",
     browseTasks: "مشاهده درخواست‌ها",
     defaultRegion: "ایروان",
@@ -29,7 +29,7 @@ export const dictionaryFa: TranslationTree = {
     badge: "کارهای روزمره سریع در سراسر ارمنستان",
     title: "درخواست را در ۱–۲ دقیقه ثبت کنید و فوراً پاسخ بگیرید",
     subtitle:
-      "jobNow یک وب‌اپ ساده برای کارهای یک‌باره، کمک فوری و کارهای کناری نزدیک است — بدون فرآیند سنگین ثبت‌نام و پیچیدگی بازار.",
+      "jobArm یک وب‌اپ ساده برای کارهای یک‌باره، کمک فوری و کارهای کناری نزدیک است — بدون فرآیند سنگین ثبت‌نام و پیچیدگی بازار.",
     publishCta: "ثبت درخواست",
     browseCta: "باز کردن فید",
     stats: {
@@ -74,6 +74,7 @@ export const dictionaryFa: TranslationTree = {
     pageIndicator: "صفحه {current} از {total}",
     emptyHint: "درخواستی نیست",
     empty: "هنوز درخواست فعالی نیست. اولین نفر باشید!",
+    emptyFiltered: "چیزی پیدا نشد. فیلترها را تغییر دهید یا پاک کنید.",
     callButton: "تماس",
     contactTelegram: "پیام در تلگرام",
     contactWhatsApp: "پیام در واتساپ",
@@ -138,7 +139,7 @@ export const dictionaryFa: TranslationTree = {
 /** हिन्दी */
 export const dictionaryHi: TranslationTree = {
   common: {
-    productName: "jobNow",
+    productName: "jobArm",
     createTask: "नया कार्य बनाएँ",
     browseTasks: "कार्य देखें",
     defaultRegion: "येरेवान",
@@ -164,7 +165,7 @@ export const dictionaryHi: TranslationTree = {
     badge: "पूरे आर्मेनिया में तेज़ स्थानीय काम",
     title: "१–२ मिनट में कार्य पोस्ट करें और तुरंत जवाब पाएँ",
     subtitle:
-      "jobNow एक सरल मोबाइल वेब सेवा है — एक बार के काम, ज़रूरी मदद और पास के पार्ट-टाइम काम, बिना भारी ऑनबोर्डिंग के।",
+      "jobArm एक सरल मोबाइल वेब सेवा है — एक बार के काम, ज़रूरी मदद और पास के पार्ट-टाइम काम, बिना भारी ऑनबोर्डिंग के।",
     publishCta: "कार्य पोस्ट करें",
     browseCta: "फ़ीड खोलें",
     stats: {
@@ -209,6 +210,7 @@ export const dictionaryHi: TranslationTree = {
     pageIndicator: "पृष्ठ {current} / {total}",
     emptyHint: "अभी कोई सूची नहीं",
     empty: "अभी कोई सक्रिय सूची नहीं। पहले पोस्ट करें!",
+    emptyFiltered: "कुछ नहीं मिला। फ़िल्टर बदलें या साफ़ करें।",
     callButton: "कॉल",
     contactTelegram: "Telegram पर संदेश",
     contactWhatsApp: "WhatsApp पर संदेश",

@@ -18,7 +18,8 @@
   --shadow: 0 24px 60px rgba(49, 32, 16, 0.12);
   --hero-sheen: rgba(255, 182, 111, 0.35);
   --hero-sheen-2: rgba(247, 215, 148, 0.32);
-  --font-sans: "Manrope", "Segoe UI", sans-serif;
+  --font-sans: var(--font-manrope), "Segoe UI", sans-serif;
+  --font-armenian-ui: var(--font-armenian), var(--font-sans);
 }
 
 .dark {
@@ -58,6 +59,10 @@ body {
     linear-gradient(180deg, var(--background) 0%, var(--background) 48%, color-mix(in srgb, var(--background) 92%, #000) 100%);
   color: var(--foreground);
   font-family: var(--font-sans);
+}
+
+[lang="hy"] {
+  font-family: var(--font-armenian-ui);
 }
 
 .dark body {

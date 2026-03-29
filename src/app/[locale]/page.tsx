@@ -1,10 +1,24 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { ui } from "@/components/ui/styles";
 import { getDictionary, getLocale } from "@/i18n/get-dictionary";
 import { routes } from "@/lib/routes";
+import { pageMetadata } from "@/lib/seo";
 import type { LocalePageProps } from "@/types/props";
 
 const statOrder = ["fastPublish", "guestAccess", "geography"] as const;
+
+export async function generateMetadata({ params }: LocalePageProps): Promise<Metadata> {
+  const { locale: rawLocale } = await params;
+  const locale = getLocale(rawLocale);
+  const d = getDictionary(locale);
+
+  return pageMetadata({
+    locale,
+    title: d.home.title,
+    description: d.home.subtitle,
+  });
+}
 
 export default async function HomePage({ params }: LocalePageProps) {
   const { locale: rawLocale } = await params;

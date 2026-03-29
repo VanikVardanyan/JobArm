@@ -4,7 +4,7 @@ import { dictionaryFa, dictionaryHi } from "@/i18n/dictionary-fa-hi";
 export const dictionaries: Record<Locale, TranslationTree> = {
   hy: {
     common: {
-      productName: "jobNow",
+      productName: "jobArm",
       createTask: "Ստեղծել հայտ",
       browseTasks: "Դիտել հայտերը",
       defaultRegion: "Երևան",
@@ -29,7 +29,7 @@ export const dictionaries: Record<Locale, TranslationTree> = {
     home: {
       badge: "Արագ կենցաղային աշխատանքներ ողջ Հայաստանում",
       title: "Տեղադրիր հայտը 1–2 րոպեի ընթացքում և ստացիր արագ արձագանք",
-      subtitle: "jobNow-ը Պարզ վեբ ծառայություն՝ շտապ և արագ աշխատանքների համար՝, առանց բարդ լուծումների",
+      subtitle: "jobArm-ը Պարզ վեբ ծառայություն՝ շտապ և արագ աշխատանքների համար՝, առանց բարդ լուծումների",
       publishCta: "Տեղադրել հայտ",
       browseCta: "դիտել հայտերը",
       stats: {
@@ -45,7 +45,7 @@ export const dictionaries: Record<Locale, TranslationTree> = {
             description: "Լրացրեք վերնագիրը, գինը և հասցեն՝ Google մուտքով։",
           },
           {
-            title: "Դիտեք ժապավենը",
+            title: "Դիտեք հայտերը",
             description: "Բացեք ակտիվ հայտերը առանց գրանցման։",
           },
           {
@@ -57,7 +57,7 @@ export const dictionaries: Record<Locale, TranslationTree> = {
     },
     jobs: {
       title: "Թարմ ակտիվ հայտեր",
-      subtitle: "Բաց ժապավեն՝ գրանցում չի պահանջվում։ Ընտրեք հայտ և զանգահարեք։",
+      subtitle: "Աշխատեք առանց գրանցման։ Ընտրեք առաջադրանք և զանգահարեք։",
       filtersTitle: "Ֆիլտրեր",
       regionsTitle: "Շրջան",
       openFilters: "Ֆիլտրեր",
@@ -74,6 +74,7 @@ export const dictionaries: Record<Locale, TranslationTree> = {
       pageIndicator: "{current} / {total}",
       emptyHint: "Հայտեր չկան",
       empty: "Ակտիվ հայտեր չկան։ Եղեք առաջինը!",
+      emptyFiltered: "Ոչինչ չի գտնվել։ Փորձեք փոխել կամ մաքրել ֆիլտրերը։",
       callButton: "Զանգել",
       contactTelegram: "Գրել Telegram",
       contactWhatsApp: "Գրել WhatsApp",
@@ -136,7 +137,7 @@ export const dictionaries: Record<Locale, TranslationTree> = {
   },
   ru: {
     common: {
-      productName: "jobNow",
+      productName: "jobArm",
       createTask: "Создать заявку",
       browseTasks: "Смотреть заявки",
       defaultRegion: "Ереван",
@@ -162,7 +163,7 @@ export const dictionaries: Record<Locale, TranslationTree> = {
       badge: "Быстрые бытовые задачи по всей Армении",
       title: "Разместите заявку за 1–2 минуты и получайте быстрие отклики",
       subtitle:
-        "jobNow — простой веб-сервис для разовых задач, срочной помощи и подработки рядом без тяжелой регистрации и сложной логики биржи.",
+        "jobArm — простой веб-сервис для разовых задач, срочной помощи и подработки рядом без тяжелой регистрации и сложной логики биржи.",
       publishCta: "Опубликовать заявку",
       browseCta: "Посмотреть заявки",
       stats: {
@@ -207,6 +208,7 @@ export const dictionaries: Record<Locale, TranslationTree> = {
       pageIndicator: "Страница {current} из {total}",
       emptyHint: "Заявок нет",
       empty: "Пока нет активных заявок. Будьте первым!",
+      emptyFiltered: "Ничего не найдено. Попробуйте изменить или сбросить фильтры.",
       callButton: "Позвонить",
       contactTelegram: "Написать в Telegram",
       contactWhatsApp: "Написать в WhatsApp",
@@ -269,7 +271,7 @@ export const dictionaries: Record<Locale, TranslationTree> = {
   },
   en: {
     common: {
-      productName: "jobNow",
+      productName: "jobArm",
       createTask: "Create task",
       browseTasks: "Browse tasks",
       defaultRegion: "Yerevan",
@@ -295,7 +297,7 @@ export const dictionaries: Record<Locale, TranslationTree> = {
       badge: "Fast local jobs across Armenia",
       title: "Post a task in 1–2 minutes and get responses right away",
       subtitle:
-        "jobNow is a simple mobile web service for one-off tasks, urgent help, and nearby side jobs without heavy onboarding or marketplace complexity.",
+        "jobArm is a simple mobile web service for one-off tasks, urgent help, and nearby side jobs without heavy onboarding or marketplace complexity.",
       publishCta: "Post a task",
       browseCta: "Browse tasks",
       stats: {
@@ -340,6 +342,7 @@ export const dictionaries: Record<Locale, TranslationTree> = {
       pageIndicator: "Page {current} of {total}",
       emptyHint: "No listings yet",
       empty: "No active listings yet. Be the first to post!",
+      emptyFiltered: "Nothing found. Try changing or clearing the filters.",
       callButton: "Call",
       contactTelegram: "Message on Telegram",
       contactWhatsApp: "Message on WhatsApp",

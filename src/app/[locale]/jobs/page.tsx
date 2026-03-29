@@ -1,4 +1,6 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { SectionLink } from "@/components/section-link";
 import { JobCard, type DbJob } from "@/entities/job/ui/job-card";
@@ -13,6 +15,7 @@ import { parseCommaListParam } from "@/lib/query-filters";
 import { jobsListWithQuery, type JobsListQuery, routes } from "@/lib/routes";
 import { ui } from "@/components/ui/styles";
 import { getDictionary, getLocale } from "@/i18n/get-dictionary";
+import { pageMetadata } from "@/lib/seo";
 import type { LocalePageProps } from "@/types/props";
 import type { JobCategory, Region } from "@/types/jobs";
 
@@ -27,6 +30,28 @@ type JobsPageProps = LocalePageProps & {
     sort?: string;
   }>;
 };
+
+export async function generateMetadata({ params, searchParams }: JobsPageProps): Promise<Metadata> {
+  const { locale: rawLocale } = await params;
+  const locale = getLocale(rawLocale);
+  const d = getDictionary(locale);
+  const sp = await searchParams;
+
+  const hasFilters =
+    Boolean(sp.category) ||
+    Boolean(sp.region) ||
+    sp.urgent === "true" ||
+    sp.sort === "old" ||
+    (sp.page !== undefined && sp.page !== "1");
+
+  return pageMetadata({
+    locale,
+    pathname: "/jobs",
+    title: d.jobs.title,
+    description: d.jobs.subtitle,
+    noIndex: hasFilters,
+  });
+}
 
 export default async function JobsPage({ params, searchParams }: JobsPageProps) {
   const { locale: rawLocale } = await params;
@@ -104,13 +129,24 @@ export default async function JobsPage({ params, searchParams }: JobsPageProps) 
     urgent: urgentQuery,
   };
 
+  const hasAppliedFilters =
+    categoryList.length > 0 || regionList.length > 0 || urgent === "true";
+
   const listSection =
     jobs.length === 0 ? (
       <div className={`${ui.panel} py-16 text-center`}>
-        <p className={`text-lg font-medium ${ui.textMuted}`}>{d.jobs.empty}</p>
-        <a href={routes.post(locale)} className={`mt-6 inline-flex ${ui.buttonPrimary}`}>
-          {d.common.createTask}
-        </a>
+        <p className={`text-lg font-medium ${ui.textMuted}`}>
+          {hasAppliedFilters ? d.jobs.emptyFiltered : d.jobs.empty}
+        </p>
+        {hasAppliedFilters ? (
+          <Link href={routes.jobs(locale)} className={`mt-6 inline-flex ${ui.buttonPrimary}`}>
+            {d.jobs.clearFilters}
+          </Link>
+        ) : (
+          <Link href={routes.post(locale)} className={`mt-6 inline-flex ${ui.buttonPrimary}`}>
+            {d.common.createTask}
+          </Link>
+        )}
       </div>
     ) : (
       <>

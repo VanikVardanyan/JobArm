@@ -108,7 +108,7 @@ export function PostForm({ locale, t, commonT, authT }: Props) {
         </div>
         <SignInButton
           label={authT.button}
-          callbackUrl={routes.post(locale)}
+          callbackUrl={routes.dashboard(locale)}
           className={`inline-flex items-center gap-3 rounded-full border-2 border-[color:var(--border)] bg-[color:var(--panel-muted)] px-5 py-2.5 text-sm font-semibold transition hover:border-[color:var(--accent)] hover:bg-[color:var(--accent-soft)]`}
         />
       </div>

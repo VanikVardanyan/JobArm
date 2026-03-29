@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="jobArm icon">
+  <defs>
+    <linearGradient id="jobnow-bg" x1="10" y1="8" x2="54" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFF4E6" />
+      <stop offset="1" stop-color="#FFD7BA" />
+    </linearGradient>
+    <linearGradient id="jobnow-accent" x1="18" y1="14" x2="46" y2="50" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F26B1D" />
+      <stop offset="1" stop-color="#CF4F07" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="18" fill="#1D1A16" />
+  <rect x="5" y="5" width="54" height="54" rx="15" fill="url(#jobnow-bg)" />
+  <path
+    d="M22 18c-2.761 0-5 2.239-5 5v18.25C17 46.083 20.917 50 25.75 50H39c2.761 0 5-2.239 5-5V26.75C44 21.917 40.083 18 35.25 18H22Z"
+    fill="#1D1A16"
+    opacity=".12"
+  />
+  <path
+    d="M24 16c-2.761 0-5 2.239-5 5v19c0 4.418 3.582 8 8 8h13c2.761 0 5-2.239 5-5V24c0-4.418-3.582-8-8-8H24Z"
+    fill="#1D1A16"
+  />
+  <path
+    d="M27 21c0-1.657 1.343-3 3-3h8.25C40.873 18 43 20.127 43 22.75V27H30c-1.657 0-3-1.343-3-3v-3Z"
+    fill="url(#jobnow-accent)"
+  />
+  <path
+    d="M23 34.25C23 31.903 24.903 30 27.25 30H37v4.75C37 39.306 33.306 43 28.75 43H23v-8.75Z"
+    fill="url(#jobnow-accent)"
+  />
+  <circle cx="43" cy="43" r="8" fill="#2B8A57" />
+  <path d="m39.5 43 2.2 2.2 5-5" fill="none" stroke="#F7F4EF" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" />
+</svg>

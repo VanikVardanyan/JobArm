@@ -21,6 +21,7 @@ export type JobFiltersCopy = {
 type Props = JobFiltersCopy & {
   categories: FilterItem[];
   regions: FilterItem[];
+  onApplied?: () => void;
 };
 
 function setFromParam(value: string | null): Set<string> {
@@ -35,6 +36,7 @@ export function JobFilters({
   urgentLabel,
   clearFilters,
   applyFilters,
+  onApplied,
 }: Props) {
   const router = useRouter();
   const pathname = usePathname();
@@ -68,8 +70,9 @@ export function JobFilters({
       } else {
         router.push(href);
       }
+      onApplied?.();
     },
-    [router, pathname, jobsNav],
+    [router, pathname, jobsNav, onApplied],
   );
 
   const toggleInSet = (key: string, current: Set<string>, setter: (s: Set<string>) => void) => {
@@ -122,7 +125,8 @@ export function JobFilters({
     } else {
       router.push(href);
     }
-  }, [router, pathname, jobsNav]);
+    onApplied?.();
+  }, [router, pathname, jobsNav, onApplied]);
 
   const checkboxClass =
     "h-4 w-4 shrink-0 rounded border-[color:var(--border)] text-[color:var(--accent)] focus:ring-[color:var(--accent)]";
