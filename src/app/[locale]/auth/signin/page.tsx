@@ -21,10 +21,16 @@ export async function generateMetadata({ params }: LocalePageProps): Promise<Met
   });
 }
 
-export default async function SignInPage({ params }: LocalePageProps) {
+export default async function SignInPage({
+  params,
+  searchParams,
+}: LocalePageProps & {
+  searchParams?: Promise<{ callbackUrl?: string }>;
+}) {
   const { locale: rawLocale } = await params;
   const locale = getLocale(rawLocale);
   const d = getDictionary(locale);
+  const callbackUrl = (await searchParams)?.callbackUrl || routes.dashboard(locale);
 
   return (
     <main className="flex flex-1 items-center justify-center py-16">
@@ -44,7 +50,7 @@ export default async function SignInPage({ params }: LocalePageProps) {
 
           <SignInButton
             label={d.auth.button}
-            callbackUrl={routes.dashboard(locale)}
+            callbackUrl={callbackUrl}
             className={`inline-flex w-full items-center justify-center gap-3 rounded-full border-2 border-[color:var(--border)] bg-white px-5 py-3 text-sm font-semibold text-[color:var(--foreground)] transition hover:border-[color:var(--accent)] hover:bg-[color:var(--accent-soft)]`}
           />
 

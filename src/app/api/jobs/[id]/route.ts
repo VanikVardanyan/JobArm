@@ -1,62 +1,12 @@
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { authOptions } from "@/lib/auth";
-import { normalizeContactMethod } from "@/lib/contact-links";
+import { validateUpdateJobInput } from "@/lib/job-input";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit } from "@/lib/rate-limit";
+import { getRequestIp } from "@/lib/request-ip";
 
 type RouteContext = { params: Promise<{ id: string }> };
-
-/** Тип поля `data` для `job.update` без `Prisma.JobUpdateInput` (он только внутри `namespace Prisma`). */
-type JobUpdateArgs = Parameters<typeof prisma.job.update>[0];
-type JobUpdatePayload = JobUpdateArgs extends { data: infer D } ? D : never;
-
-function buildJobUpdateData(body: Record<string, unknown>): JobUpdatePayload {
-  const data: Record<string, unknown> = {};
-
-  if (body.title && typeof body.title === "string") {
-    data.title = body.title;
-  }
-  if (body.description !== undefined) {
-    data.description = body.description === null ? null : String(body.description);
-  }
-  if (body.category && typeof body.category === "string") {
-    data.category = body.category;
-  }
-  if (body.price !== undefined) {
-    data.price = body.price === null ? null : String(body.price);
-  }
-  if (body.priceType && typeof body.priceType === "string") {
-    data.priceType = body.priceType;
-  }
-  if (body.region && typeof body.region === "string") {
-    data.region = body.region;
-  }
-  if (body.address && typeof body.address === "string") {
-    data.address = body.address;
-  }
-  if (body.isUrgent !== undefined && typeof body.isUrgent === "boolean") {
-    data.isUrgent = body.isUrgent;
-  }
-  if (body.date !== undefined) {
-    data.date = body.date === null ? null : String(body.date);
-  }
-  if (body.time !== undefined) {
-    data.time = body.time === null ? null : String(body.time);
-  }
-  if (body.status && typeof body.status === "string") {
-    data.status = body.status;
-  }
-  if (body.contactPhone && typeof body.contactPhone === "string") {
-    data.contactPhone = body.contactPhone;
-  }
-  if (body.contactMethod !== undefined) {
-    data.contactMethod = normalizeContactMethod(
-      typeof body.contactMethod === "string" ? body.contactMethod : undefined
-    );
-  }
-
-  return data as JobUpdatePayload;
-}
 
 // GET /api/jobs/[id] — публичная страница заявки
 export async function GET(_: Request, { params }: RouteContext) {
@@ -77,8 +27,23 @@ export async function GET(_: Request, { params }: RouteContext) {
 // PATCH /api/jobs/[id] — редактировать / изменить статус (только автор)
 export async function PATCH(request: Request, { params }: RouteContext) {
   const session = await getServerSession(authOptions);
-  if (!session?.user) {
+  if (!session?.user?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const rateLimit = checkRateLimit({
+    key: `jobs:update:${getRequestIp(request)}:${session.user.email}`,
+    limit: 20,
+    windowMs: 10 * 60 * 1000,
+  });
+  if (!rateLimit.ok) {
+    return NextResponse.json(
+      { error: "Too many update attempts. Please try again later." },
+      {
+        status: 429,
+        headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
+      },
+    );
   }
 
   const { id } = await params;
@@ -88,30 +53,32 @@ export async function PATCH(request: Request, { params }: RouteContext) {
   }
 
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email! },
+    where: { email: session.user.email },
   });
   if (!user || job.authorId !== user.id) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  let body: Record<string, unknown>;
+  let body: unknown;
   try {
-    const raw = await request.json();
-    body = raw && typeof raw === "object" && !Array.isArray(raw) ? (raw as Record<string, unknown>) : {};
+    body = await request.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const data = buildJobUpdateData(body);
+  const parsed = validateUpdateJobInput(body);
+  if (!parsed.ok) {
+    return NextResponse.json({ error: parsed.error }, { status: 400 });
+  }
 
-  if (Object.keys(data).length === 0) {
+  if (Object.keys(parsed.data).length === 0) {
     return NextResponse.json({ error: "No fields to update" }, { status: 400 });
   }
 
   try {
     const updated = await prisma.job.update({
       where: { id },
-      data,
+      data: parsed.data,
     });
     return NextResponse.json(updated);
   } catch (e) {
@@ -126,10 +93,25 @@ export async function PATCH(request: Request, { params }: RouteContext) {
 }
 
 // DELETE /api/jobs/[id] — удалить заявку (только автор)
-export async function DELETE(_: Request, { params }: RouteContext) {
+export async function DELETE(request: Request, { params }: RouteContext) {
   const session = await getServerSession(authOptions);
-  if (!session?.user) {
+  if (!session?.user?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const rateLimit = checkRateLimit({
+    key: `jobs:delete:${getRequestIp(request)}:${session.user.email}`,
+    limit: 10,
+    windowMs: 10 * 60 * 1000,
+  });
+  if (!rateLimit.ok) {
+    return NextResponse.json(
+      { error: "Too many delete attempts. Please try again later." },
+      {
+        status: 429,
+        headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
+      },
+    );
   }
 
   const { id } = await params;
@@ -139,7 +121,7 @@ export async function DELETE(_: Request, { params }: RouteContext) {
   }
 
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email! },
+    where: { email: session.user.email },
   });
   if (!user || job.authorId !== user.id) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });

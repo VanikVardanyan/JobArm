@@ -15,6 +15,8 @@
     "src/lib/phone.ts",
     "src/lib/query-filters.ts",
     "src/lib/jobs-list.ts",
+    "src/lib/contact-links.ts",
+    "src/lib/job-input.ts",
     "tests/**/*.ts"
   ],
   "exclude": [

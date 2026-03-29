@@ -1,4 +1,5 @@
 import assert from "assert";
+import { validateCreateJobInput, validateUpdateJobInput } from "../src/lib/job-input";
 import { parseJobsPage, parseJobsSortOrder } from "../src/lib/jobs-list";
 import { toE164AmPhone } from "../src/lib/phone";
 import { parseCommaListParam } from "../src/lib/query-filters";
@@ -49,6 +50,76 @@ runTest("parseJobsSortOrder returns asc only for old sort", () => {
   assert.equal(parseJobsSortOrder("old"), "asc");
   assert.equal(parseJobsSortOrder("new"), "desc");
   assert.equal(parseJobsSortOrder(undefined), "desc");
+});
+
+runTest("validateCreateJobInput normalizes and validates payload", () => {
+  const result = validateCreateJobInput({
+    title: "  Need loaders tonight  ",
+    description: "  Carry boxes to the 3rd floor  ",
+    category: "loaders",
+    price: " 15000 AMD ",
+    region: "yerevan",
+    address: "  Arabkir, Komitas 12  ",
+    isUrgent: true,
+    date: "2026-03-29",
+    time: "18:30",
+    contactPhone: "+374 99 123 456",
+    contactMethod: "telegram",
+  });
+
+  assert.equal(result.ok, true);
+  if (!result.ok) {
+    return;
+  }
+
+  assert.deepEqual(result.data, {
+    title: "Need loaders tonight",
+    description: "Carry boxes to the 3rd floor",
+    category: "loaders",
+    price: "15000 AMD",
+    priceType: "fixed",
+    region: "yerevan",
+    address: "Arabkir, Komitas 12",
+    isUrgent: true,
+    date: "2026-03-29",
+    time: "18:30",
+    contactPhone: "+37499123456",
+    contactMethod: "telegram",
+  });
+});
+
+runTest("validateCreateJobInput rejects invalid category", () => {
+  const result = validateCreateJobInput({
+    title: "Need help",
+    category: "invalid-category",
+    region: "yerevan",
+    address: "Arabkir 1",
+    contactPhone: "99 123 456",
+  });
+
+  assert.equal(result.ok, false);
+  if (!result.ok) {
+    assert.equal(result.error, "Invalid category");
+  }
+});
+
+runTest("validateUpdateJobInput allows partial updates and normalizes phone", () => {
+  const result = validateUpdateJobInput({
+    title: "  Updated title  ",
+    contactPhone: "99 123 456",
+    status: "closed",
+  });
+
+  assert.equal(result.ok, true);
+  if (!result.ok) {
+    return;
+  }
+
+  assert.deepEqual(result.data, {
+    title: "Updated title",
+    contactPhone: "+37499123456",
+    status: "closed",
+  });
 });
 
 if (process.exitCode && process.exitCode !== 0) {

@@ -80,6 +80,10 @@ http://localhost:3000/api/auth/callback/google
 https://your-domain.am/api/auth/callback/google
 ```
 
+8. Keep `NEXT_PUBLIC_SITE_URL` equal to the same production origin so sitemap, canonical URLs, and Open Graph links point to the real domain.
+
+9. Ensure Vercel uses Node.js 20 for this project, matching the `engines.node` value in `package.json`.
+
 ## Existing database and Prisma
 
 If Prisma shows `P3005`, it means the database is already populated and Prisma migrations were not baselined yet.
@@ -91,6 +95,12 @@ Later, if you want a fully managed Prisma migration flow, baseline the current p
 ```bash
 npm run db:deploy
 ```
+
+## Release hardening
+
+- Sign-in now goes through `/auth/signin` and redirects to the localized sign-in page, so production auth does not depend on a hardcoded locale.
+- Job create/update API should be protected by the built-in validation and rate limiting in the repo. Keep the app on the Node.js runtime so the in-memory limiter can work per instance.
+- If any real database or OAuth secrets were previously shared outside your machine, rotate them before launch.
 
 ## Useful commands
 

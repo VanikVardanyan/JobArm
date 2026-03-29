@@ -20,6 +20,6 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    signIn: "/ru/auth/signin",
+    signIn: "/auth/signin",
   },
 };

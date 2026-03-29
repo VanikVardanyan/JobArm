@@ -2,9 +2,11 @@ import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { authOptions } from "@/lib/auth";
 import { JOBS_PAGE_SIZE, parseJobsPage, parseJobsSortOrder } from "@/lib/jobs-list";
+import { validateCreateJobInput } from "@/lib/job-input";
 import { parseCommaListParam } from "@/lib/query-filters";
-import { normalizeContactMethod } from "@/lib/contact-links";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit } from "@/lib/rate-limit";
+import { getRequestIp } from "@/lib/request-ip";
 
 // GET /api/jobs — публичная лента заявок (пагинация и сортировка как на странице /jobs)
 export async function GET(request: Request) {
@@ -62,55 +64,46 @@ export async function GET(request: Request) {
 // POST /api/jobs — создать заявку (только авторизованным)
 export async function POST(request: Request) {
   const session = await getServerSession(authOptions);
-  if (!session?.user) {
+  if (!session?.user?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const rateLimit = checkRateLimit({
+    key: `jobs:create:${getRequestIp(request)}:${session.user.email}`,
+    limit: 8,
+    windowMs: 10 * 60 * 1000,
+  });
+  if (!rateLimit.ok) {
+    return NextResponse.json(
+      { error: "Too many create attempts. Please try again later." },
+      {
+        status: 429,
+        headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
+      },
+    );
+  }
+
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email! },
+    where: { email: session.user.email },
   });
   if (!user) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
 
-  const body = await request.json();
-  const {
-    title,
-    description,
-    category,
-    price,
-    priceType,
-    region,
-    address,
-    isUrgent,
-    date,
-    time,
-    contactPhone,
-    contactMethod: rawMethod,
-  } = body;
-
-  if (!title || !category || !region || !address || !contactPhone) {
-    return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const contactMethod = normalizeContactMethod(rawMethod);
+  const parsed = validateCreateJobInput(body);
+  if (!parsed.ok) {
+    return NextResponse.json({ error: parsed.error }, { status: 400 });
+  }
 
   const job = await prisma.job.create({
-    data: {
-      title,
-      description: description ?? null,
-      category,
-      price: price ?? null,
-      priceType: priceType ?? "fixed",
-      region,
-      address,
-      isUrgent: isUrgent ?? false,
-      date: date ?? null,
-      time: time ?? null,
-      contactPhone,
-      contactMethod,
-      authorId: user.id,
-    },
+    data: { ...parsed.data, authorId: user.id },
   });
 
   return NextResponse.json(job, { status: 201 });
