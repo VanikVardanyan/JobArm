@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
 import { PatternFormat } from "react-number-format";
 import { SignInButton } from "@/features/auth/ui/sign-in-button";
 import { ui } from "@/components/ui/styles";
@@ -37,6 +37,7 @@ const CATEGORIES = Object.keys(categoryLabels) as JobCategory[];
 const REGIONS = Object.keys(regionLabels) as Region[];
 
 export function PostForm({ locale, t, commonT, authT }: Props) {
+  const router = useRouter();
   const { data: session, status } = useSession();
   const [serverError, setServerError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -85,6 +86,11 @@ export function PostForm({ locale, t, commonT, authT }: Props) {
     }
   }
 
+  function goToJobs() {
+    router.push(routes.jobs(locale));
+    router.refresh();
+  }
+
   if (status === "loading") {
     return (
       <div className="mt-8 flex items-center justify-center py-12">
@@ -127,15 +133,19 @@ export function PostForm({ locale, t, commonT, authT }: Props) {
           <h2 className="text-lg font-semibold">{t.successTitle}</h2>
           <p className={`mt-2 text-sm leading-7 ${ui.textMuted}`}>{t.successText}</p>
         </div>
-        <Link href={routes.jobs(locale)} className={ui.buttonPrimary}>
+        <button type="button" onClick={goToJobs} className={ui.buttonPrimary}>
           {commonT.backToJobs}
-        </Link>
+        </button>
       </div>
     );
   }
 
   function fieldClass(hasError: boolean) {
     return hasError ? ui.fieldInvalid : ui.field;
+  }
+
+  function selectClass(hasError: boolean) {
+    return `${fieldClass(hasError)} min-h-12 appearance-none pe-12`;
   }
 
   return (
@@ -206,32 +216,61 @@ export function PostForm({ locale, t, commonT, authT }: Props) {
 
       <label className="flex flex-col gap-1">
         <span className="text-sm font-semibold">{t.fields.category}</span>
-        <select className={fieldClass(!!errors.category)} {...register("category", { required: t.errors.required })}>
-          <option value="">{t.placeholders.category}</option>
-          {CATEGORIES.map((key) => (
-            <option key={key} value={key}>
-              {categoryLabels[key][locale]}
-            </option>
-          ))}
-        </select>
+        <div className="relative">
+          <select className={selectClass(!!errors.category)} {...register("category", { required: t.errors.required })}>
+            <option value="">{t.placeholders.category}</option>
+            {CATEGORIES.map((key) => (
+              <option key={key} value={key}>
+                {categoryLabels[key][locale]}
+              </option>
+            ))}
+          </select>
+          <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-[color:var(--muted)]">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden>
+              <path d="M5 7.5 10 12.5 15 7.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
+        </div>
         {errors.category ? <span className="text-xs text-red-500">{errors.category.message}</span> : null}
       </label>
 
       <label className="flex flex-col gap-1">
         <span className="text-sm font-semibold">{t.fields.region}</span>
-        <select className={fieldClass(!!errors.region)} {...register("region", { required: t.errors.required })}>
-          {REGIONS.map((key) => (
-            <option key={key} value={key}>
-              {regionLabels[key][locale]}
-            </option>
-          ))}
-        </select>
+        <div className="relative">
+          <select className={selectClass(!!errors.region)} {...register("region", { required: t.errors.required })}>
+            {REGIONS.map((key) => (
+              <option key={key} value={key}>
+                {regionLabels[key][locale]}
+              </option>
+            ))}
+          </select>
+          <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-[color:var(--muted)]">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden>
+              <path d="M5 7.5 10 12.5 15 7.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
+        </div>
         {errors.region ? <span className="text-xs text-red-500">{errors.region.message}</span> : null}
       </label>
 
       <label className="flex flex-col gap-1">
         <span className="text-sm font-semibold">{t.fields.price}</span>
-        <input type="text" className={ui.field} {...register("price")} />
+        <div className="relative">
+          <input
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            className={`${ui.field} min-h-12 pe-18`}
+            {...register("price", {
+              onChange: (event) => {
+                event.target.value = event.target.value.replace(/\D+/g, "");
+              },
+            })}
+          />
+          <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-sm font-semibold text-[color:var(--muted)]">
+            dram
+          </span>
+        </div>
       </label>
 
       <label className="flex flex-col gap-1">
@@ -242,12 +281,12 @@ export function PostForm({ locale, t, commonT, authT }: Props) {
 
       <label className="flex flex-col gap-1">
         <span className="text-sm font-semibold">{t.fields.date}</span>
-        <input type="date" className={ui.field} {...register("date")} />
+        <input type="date" className={`${ui.field} min-h-12`} {...register("date")} />
       </label>
 
       <label className="flex flex-col gap-1">
         <span className="text-sm font-semibold">{t.fields.time}</span>
-        <input type="time" className={ui.field} {...register("time")} />
+        <input type="time" className={`${ui.field} min-h-12`} {...register("time")} />
       </label>
 
       {serverError ? (
