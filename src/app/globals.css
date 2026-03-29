@@ -1,0 +1,151 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f6f1e8;
+  --surface: rgba(255, 252, 247, 0.88);
+  --surface-strong: #fffaf2;
+  --panel-muted: rgba(255, 255, 255, 0.55);
+  --panel-muted-hover: rgba(255, 255, 255, 0.92);
+  --foreground: #1d1a16;
+  --foreground-on-dark: #f7f4ef;
+  --muted: #63584c;
+  --border: rgba(80, 63, 42, 0.16);
+  --accent: #f26b1d;
+  --accent-strong: #cf4f07;
+  --accent-soft: #ffe3cf;
+  --success: #2b8a57;
+  --warning: #c97000;
+  --shadow: 0 24px 60px rgba(49, 32, 16, 0.12);
+  --hero-sheen: rgba(255, 182, 111, 0.35);
+  --hero-sheen-2: rgba(247, 215, 148, 0.32);
+  --font-sans: "Manrope", "Segoe UI", sans-serif;
+}
+
+.dark {
+  --background: #0f0e0c;
+  --surface: rgba(28, 26, 22, 0.92);
+  --surface-strong: #1a1814;
+  --panel-muted: rgba(40, 36, 30, 0.75);
+  --panel-muted-hover: rgba(48, 44, 38, 0.95);
+  --foreground: #f2ebe3;
+  --foreground-on-dark: #f2ebe3;
+  --muted: #a89b8c;
+  --border: rgba(255, 213, 170, 0.12);
+  --accent: #ff8c42;
+  --accent-strong: #ffb078;
+  --accent-soft: rgba(255, 140, 66, 0.18);
+  --success: #5ecf8f;
+  --warning: #e5a84a;
+  --shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  --hero-sheen: rgba(255, 140, 66, 0.14);
+  --hero-sheen-2: rgba(94, 207, 143, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, var(--hero-sheen), transparent 34%),
+    radial-gradient(circle at top right, var(--hero-sheen-2), transparent 28%),
+    linear-gradient(180deg, var(--background) 0%, var(--background) 48%, color-mix(in srgb, var(--background) 92%, #000) 100%);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+.dark body {
+  background:
+    radial-gradient(circle at 18% 8%, rgba(255, 120, 48, 0.12), transparent 40%),
+    radial-gradient(circle at 88% 18%, rgba(94, 207, 143, 0.06), transparent 32%),
+    linear-gradient(180deg, #12100e 0%, var(--background) 38%, #0a0908 100%);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+.app-shell {
+  position: relative;
+  overflow: hidden;
+}
+
+.app-shell::before,
+.app-shell::after {
+  position: fixed;
+  z-index: -1;
+  content: "";
+  inset: auto;
+  border-radius: 999px;
+  filter: blur(18px);
+  opacity: 0.6;
+}
+
+.app-shell::before {
+  width: 14rem;
+  height: 14rem;
+  top: 5rem;
+  left: -3rem;
+  background: rgba(242, 107, 29, 0.16);
+}
+
+.app-shell::after {
+  width: 16rem;
+  height: 16rem;
+  right: -5rem;
+  bottom: 7rem;
+  background: rgba(65, 153, 105, 0.12);
+}
+
+.dark .app-shell::before {
+  background: rgba(255, 140, 66, 0.12);
+  opacity: 0.5;
+}
+
+.dark .app-shell::after {
+  background: rgba(94, 207, 143, 0.08);
+  opacity: 0.45;
+}
+
+.glass-panel {
+  background: var(--surface);
+  backdrop-filter: blur(16px);
+  box-shadow: var(--shadow);
+}
+
+.home-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 2rem;
+  border: 1px solid var(--border);
+  background:
+    radial-gradient(ellipse 80% 60% at 12% 18%, var(--hero-sheen), transparent 52%),
+    radial-gradient(ellipse 70% 50% at 92% 12%, var(--hero-sheen-2), transparent 48%),
+    linear-gradient(165deg, color-mix(in srgb, var(--surface-strong) 88%, transparent), var(--surface) 55%);
+  box-shadow: var(--shadow);
+}
+
+.dark .home-hero {
+  background:
+    radial-gradient(ellipse 70% 55% at 10% 20%, rgba(255, 120, 48, 0.14), transparent 55%),
+    radial-gradient(ellipse 60% 45% at 95% 8%, rgba(94, 207, 143, 0.06), transparent 50%),
+    linear-gradient(165deg, var(--surface-strong), var(--surface) 60%);
+}
+
+.text-balance {
+  text-wrap: balance;
+}
