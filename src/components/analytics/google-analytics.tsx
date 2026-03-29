@@ -1,7 +1,7 @@
 "use client";
 
 import Script from "next/script";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { gaMeasurementId } from "@/lib/seo";
 
@@ -12,7 +12,7 @@ declare global {
   }
 }
 
-export function GoogleAnalytics() {
+function GoogleAnalyticsPageViews() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -32,6 +32,10 @@ export function GoogleAnalytics() {
     });
   }, [pathname, searchParams]);
 
+  return null;
+}
+
+export function GoogleAnalytics() {
   if (!gaMeasurementId) {
     return null;
   }
@@ -48,6 +52,9 @@ export function GoogleAnalytics() {
           gtag('config', '${gaMeasurementId}', { send_page_view: false });
         `}
       </Script>
+      <Suspense fallback={null}>
+        <GoogleAnalyticsPageViews />
+      </Suspense>
     </>
   );
 }
