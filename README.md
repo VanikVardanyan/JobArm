@@ -65,18 +65,31 @@ This project uses Prisma with PostgreSQL.
 npm run vercel-build
 ```
 
-4. Set the production domain.
-5. Update `NEXTAUTH_URL` to your production domain, for example:
+4. If your database already contains tables created outside Prisma migrations, do not run `prisma migrate deploy` during Vercel build. This repo already uses a safe build command that skips automatic migrations.
+5. Set the production domain.
+6. Update `NEXTAUTH_URL` to your production domain, for example:
 
 ```bash
 https://your-domain.am
 ```
 
-6. In Google Cloud Console, add these Authorized redirect URIs:
+7. In Google Cloud Console, add these Authorized redirect URIs:
 
 ```text
 http://localhost:3000/api/auth/callback/google
 https://your-domain.am/api/auth/callback/google
+```
+
+## Existing database and Prisma
+
+If Prisma shows `P3005`, it means the database is already populated and Prisma migrations were not baselined yet.
+
+For now, deployment can proceed without running migrations in Vercel build.
+
+Later, if you want a fully managed Prisma migration flow, baseline the current production database first and only then use:
+
+```bash
+npm run db:deploy
 ```
 
 ## Useful commands
