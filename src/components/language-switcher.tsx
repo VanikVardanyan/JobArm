@@ -1,5 +1,6 @@
 "use client";
 
+import type { Route } from "next";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { localeLabels, locales } from "@/i18n/config";
@@ -12,14 +13,15 @@ export function LanguageSwitcher({ currentLocale }: LanguageSwitcherProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  function getLocaleHref(locale: Locale) {
+  function getLocaleHref(locale: Locale): Route {
     const segments = pathname.split("/");
     segments[1] = locale;
 
     const nextPath = segments.join("/") || `/${locale}`;
     const query = searchParams.toString();
 
-    return query ? `${nextPath}?${query}` : nextPath;
+    const href = query ? `${nextPath}?${query}` : nextPath;
+    return href as Route;
   }
 
   return (

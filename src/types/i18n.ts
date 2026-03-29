@@ -82,6 +82,7 @@ export type TranslationTree = {
     pageIndicator: string;
     emptyHint: string;
     empty: string;
+    emptyFiltered: string;
     callButton: string;
     contactTelegram: string;
     contactWhatsApp: string;
