@@ -43,11 +43,16 @@ export default async function HomePage({ params }: LocalePageProps) {
 
           <p className={`max-w-2xl text-base leading-8 sm:text-lg ${ui.textMuted}`}>{d.home.subtitle}</p>
 
-          <div className="flex flex-wrap items-center justify-center gap-3">
+          <div className="flex w-full flex-col items-stretch justify-center gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
             <Link href={routes.post(locale)} className={ui.buttonPrimary} data-tour="home-publish">
               {d.home.publishCta}
             </Link>
-            <Link href={routes.jobs(locale)} className={ui.buttonSecondary} data-tour="home-browse">
+            <Link
+              href={routes.jobs(locale)}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-[color:var(--accent)] px-6 py-3.5 text-sm font-semibold leading-tight shadow-[0_14px_30px_rgba(242,107,29,0.16)] transition hover:translate-y-[-1px] hover:shadow-[0_18px_36px_rgba(242,107,29,0.22)] sm:w-auto"
+              style={{ backgroundColor: "#fff7ef", color: "#6f2500" }}
+              data-tour="home-browse"
+            >
               {d.home.browseCta}
             </Link>
           </div>
