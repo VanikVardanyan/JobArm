@@ -76,4 +76,10 @@ model Job {
   author        User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  @@index([status, createdAt(sort: Desc)])
+  @@index([authorId, createdAt(sort: Desc)])
+  @@index([category])
+  @@index([region])
+  @@index([isUrgent])
 }

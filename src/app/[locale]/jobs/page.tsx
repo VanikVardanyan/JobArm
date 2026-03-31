@@ -1,11 +1,11 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { SectionLink } from "@/components/section-link";
 import { JobCard, type DbJob } from "@/entities/job/ui/job-card";
 import { JobsFiltersLayout } from "@/features/filter-jobs/ui/jobs-filters-layout";
+import { JobsPageActions } from "@/features/jobs-list/ui/jobs-page-actions";
 import { JobsNavProvider } from "@/features/jobs-list/ui/jobs-nav-provider";
 import { JobsPagination } from "@/features/jobs-list/ui/jobs-pagination";
 import { JobsSortBar } from "@/features/jobs-list/ui/jobs-sort-bar";
@@ -16,7 +16,6 @@ import { parseCommaListParam } from "@/lib/query-filters";
 import { jobsListWithQuery, type JobsListQuery, routes } from "@/lib/routes";
 import { ui } from "@/components/ui/styles";
 import { getDictionary, getLocale } from "@/i18n/get-dictionary";
-import { authOptions } from "@/lib/auth";
 import { pageMetadata } from "@/lib/seo";
 import type { LocalePageProps } from "@/types/props";
 import type { JobCategory, Region } from "@/types/jobs";
@@ -62,7 +61,6 @@ export default async function JobsPage({ params, searchParams }: JobsPageProps) 
 
   const locale = getLocale(rawLocale);
   const d = getDictionary(locale);
-  const session = await getServerSession(authOptions);
 
   const categoryList = parseCommaListParam(category);
   const regionList = parseCommaListParam(region);
@@ -89,7 +87,18 @@ export default async function JobsPage({ params, searchParams }: JobsPageProps) 
     ...(urgent === "true" && { isUrgent: true }),
   };
 
-  const total = await prisma.job.count({ where });
+  const skip = (page - 1) * JOBS_PAGE_SIZE;
+
+  const [total, jobs] = await prisma.$transaction([
+    prisma.job.count({ where }),
+    prisma.job.findMany({
+      where,
+      include: { author: { select: { name: true } } },
+      orderBy: { createdAt: sortOrder },
+      skip,
+      take: JOBS_PAGE_SIZE,
+    }),
+  ]);
 
   if (total === 0 && page > 1) {
     redirect(jobsListWithQuery(locale, baseQuery));
@@ -102,19 +111,9 @@ export default async function JobsPage({ params, searchParams }: JobsPageProps) 
       jobsListWithQuery(locale, {
         ...baseQuery,
         page: totalPages > 1 ? totalPages : undefined,
-      }),
+      })
     );
   }
-
-  const skip = (page - 1) * JOBS_PAGE_SIZE;
-
-  const jobs: DbJob[] = await prisma.job.findMany({
-    where,
-    include: { author: { select: { name: true } } },
-    orderBy: { createdAt: sortOrder },
-    skip,
-    take: JOBS_PAGE_SIZE,
-  });
 
   const categoryItems = (Object.keys(categoryLabels) as JobCategory[]).map((key) => ({
     key,
@@ -132,8 +131,7 @@ export default async function JobsPage({ params, searchParams }: JobsPageProps) 
     urgent: urgentQuery,
   };
 
-  const hasAppliedFilters =
-    categoryList.length > 0 || regionList.length > 0 || urgent === "true";
+  const hasAppliedFilters = categoryList.length > 0 || regionList.length > 0 || urgent === "true";
 
   const listSection =
     jobs.length === 0 ? (
@@ -208,16 +206,11 @@ export default async function JobsPage({ params, searchParams }: JobsPageProps) 
                 <h1 className="text-2xl font-semibold">{d.jobs.title}</h1>
                 <p className={`mt-2 text-sm leading-7 ${ui.textMuted}`}>{d.jobs.subtitle}</p>
               </div>
-              {session?.user ? (
-                <div className="flex flex-wrap gap-3">
-                  <Link href={routes.dashboard(locale)} className={`inline-flex shrink-0 ${ui.buttonSecondary}`}>
-                    {d.dashboard.title}
-                  </Link>
-                  <Link href={routes.post(locale)} className={`inline-flex shrink-0 ${ui.buttonPrimary}`} data-tour="jobs-create">
-                    {d.common.createTask}
-                  </Link>
-                </div>
-              ) : null}
+              <JobsPageActions
+                locale={locale}
+                dashboardLabel={d.dashboard.title}
+                createTaskLabel={d.common.createTask}
+              />
             </div>
 
             <JobsSortBar

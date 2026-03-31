@@ -9,7 +9,6 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import type { Route } from "next";
-import { RouteSpinner } from "@/components/route-spinner";
 
 type JobsNavContextValue = {
   navigate: (href: Route) => void;
@@ -49,18 +48,7 @@ export function JobsNavProvider({ children }: JobsNavProviderProps) {
 
   return (
     <JobsNavContext.Provider value={{ navigate, isPending }}>
-      <div className="relative">
-        {isPending ? (
-          <div
-            className="fixed inset-0 z-20 flex items-start justify-center bg-[color:var(--background)]/55 pt-[28vh] backdrop-blur-[3px]"
-            aria-busy="true"
-            aria-live="polite"
-          >
-            <RouteSpinner />
-          </div>
-        ) : null}
-        {children}
-      </div>
+      <div className="relative">{children}</div>
     </JobsNavContext.Provider>
   );
 }
