@@ -209,9 +209,14 @@ export default async function JobsPage({ params, searchParams }: JobsPageProps) 
                 <p className={`mt-2 text-sm leading-7 ${ui.textMuted}`}>{d.jobs.subtitle}</p>
               </div>
               {session?.user ? (
-                <Link href={routes.post(locale)} className={`inline-flex shrink-0 ${ui.buttonPrimary}`} data-tour="jobs-create">
-                  {d.common.createTask}
-                </Link>
+                <div className="flex flex-wrap gap-3">
+                  <Link href={routes.dashboard(locale)} className={`inline-flex shrink-0 ${ui.buttonSecondary}`}>
+                    {d.dashboard.title}
+                  </Link>
+                  <Link href={routes.post(locale)} className={`inline-flex shrink-0 ${ui.buttonPrimary}`} data-tour="jobs-create">
+                    {d.common.createTask}
+                  </Link>
+                </div>
               ) : null}
             </div>
 
