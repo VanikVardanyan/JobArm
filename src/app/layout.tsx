@@ -67,6 +67,9 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
+  verification: {
+    google: "0xWQiAkwGQYHWKn5n4Uk5vRaAdBoQ1cTFlIVbx8gN6U",
+  },
   icons: {
     icon: "/icon.svg",
   },
