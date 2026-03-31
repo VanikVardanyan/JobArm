@@ -3,11 +3,11 @@
 import Script from "next/script";
 import { Suspense, useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
+import { trackPageView } from "@/lib/analytics";
 import { gaMeasurementId } from "@/lib/seo";
 
 declare global {
   interface Window {
-    dataLayer: unknown[];
     gtag?: (...args: unknown[]) => void;
   }
 }
@@ -17,18 +17,13 @@ function GoogleAnalyticsPageViews() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    if (!gaMeasurementId || !window.gtag) {
-      return;
-    }
-
     const query = searchParams.toString();
     const pagePath = query ? `${pathname}?${query}` : pathname;
 
-    window.gtag("event", "page_view", {
+    trackPageView({
       page_title: document.title,
       page_location: window.location.href,
       page_path: pagePath,
-      send_to: gaMeasurementId,
     });
   }, [pathname, searchParams]);
 
@@ -52,6 +47,7 @@ export function GoogleAnalytics() {
           gtag('config', '${gaMeasurementId}', { send_page_view: false });
         `}
       </Script>
+
       <Suspense fallback={null}>
         <GoogleAnalyticsPageViews />
       </Suspense>

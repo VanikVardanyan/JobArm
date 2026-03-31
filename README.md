@@ -33,6 +33,8 @@ cp .env.example .env
 - `NEXTAUTH_SECRET`: random long secret
 - `GOOGLE_CLIENT_ID`: Google OAuth client id
 - `GOOGLE_CLIENT_SECRET`: Google OAuth client secret
+- `NEXT_PUBLIC_TAWK_PROPERTY_ID`: optional `tawk.to` property id for the live chat widget
+- `NEXT_PUBLIC_TAWK_WIDGET_ID`: optional widget id from `tawk.to` (`default` for the default widget)
 
 5. Apply migrations:
 
@@ -83,6 +85,28 @@ https://your-domain.am/api/auth/callback/google
 8. Keep `NEXT_PUBLIC_SITE_URL` equal to the same production origin so sitemap, canonical URLs, and Open Graph links point to the real domain.
 
 9. Ensure Vercel uses Node.js 20 for this project, matching the `engines.node` value in `package.json`.
+10. If you want the free `tawk.to` live chat widget, add `NEXT_PUBLIC_TAWK_PROPERTY_ID` and `NEXT_PUBLIC_TAWK_WIDGET_ID` in Vercel as well.
+
+## Tawk chat
+
+The project includes optional support for the `tawk.to` website chat widget.
+
+1. Create a property in `tawk.to`.
+2. Copy the widget code from the `Chat Widget` section in the dashboard.
+3. Take the two parts from the embed URL:
+
+```text
+https://embed.tawk.to/<PROPERTY_ID>/<WIDGET_ID>
+```
+
+4. Add them to `.env`:
+
+```bash
+NEXT_PUBLIC_TAWK_PROPERTY_ID="<PROPERTY_ID>"
+NEXT_PUBLIC_TAWK_WIDGET_ID="<WIDGET_ID>"
+```
+
+If these variables are missing, the chat widget stays disabled.
 
 ## Existing database and Prisma
 

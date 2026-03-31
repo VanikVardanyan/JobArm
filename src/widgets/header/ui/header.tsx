@@ -132,6 +132,7 @@ export function Header({
         href={routes.home(locale)}
         className="flex min-w-0 shrink items-center gap-2"
         aria-label={productName}
+        data-tour="header-brand"
       >
         <BrandLogo label={productName} />
       </Link>

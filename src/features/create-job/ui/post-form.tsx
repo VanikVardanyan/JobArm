@@ -6,6 +6,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useSession } from "next-auth/react";
 import { PatternFormat } from "react-number-format";
 import { SignInButton } from "@/features/auth/ui/sign-in-button";
+import { trackEvent } from "@/lib/analytics";
 import { ui } from "@/components/ui/styles";
 import { categoryLabels, regionLabels } from "@/lib/jobs";
 import { toE164AmPhone } from "@/lib/phone";
@@ -78,11 +79,32 @@ export function PostForm({ locale, t, commonT, authT }: Props) {
       if (!res.ok) {
         const json = await res.json().catch(() => ({}));
         setServerError(json.error ?? t.errorText);
+        trackEvent("job_create_error", {
+          locale,
+          contact_method: data.contactMethod,
+          region: data.region,
+          category: data.category || "unknown",
+        });
         return;
       }
+      trackEvent("job_create_success", {
+        locale,
+        contact_method: data.contactMethod,
+        region: data.region,
+        category: data.category || "unknown",
+        has_price: Boolean(data.price),
+        has_date: Boolean(data.date),
+        has_time: Boolean(data.time),
+      });
       setSuccess(true);
     } catch {
       setServerError(t.errorText);
+      trackEvent("job_create_error", {
+        locale,
+        contact_method: data.contactMethod,
+        region: data.region,
+        category: data.category || "unknown",
+      });
     }
   }
 
@@ -103,7 +125,15 @@ export function PostForm({ locale, t, commonT, authT }: Props) {
     return (
       <div className="mt-8 flex flex-col items-center gap-5 py-10 text-center">
         <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[color:var(--accent-soft)]">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-[color:var(--accent-strong)]">
+          <svg
+            width="26"
+            height="26"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            className="text-[color:var(--accent-strong)]"
+          >
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
             <path d="M7 11V7a5 5 0 0 1 10 0v4" />
           </svg>
@@ -115,7 +145,7 @@ export function PostForm({ locale, t, commonT, authT }: Props) {
         <SignInButton
           label={authT.button}
           callbackUrl={routes.dashboard(locale)}
-          className={`inline-flex items-center gap-3 rounded-full border-2 border-[color:var(--border)] bg-[color:var(--panel-muted)] px-5 py-2.5 text-sm font-semibold transition hover:border-[color:var(--accent)] hover:bg-[color:var(--accent-soft)]`}
+          className={`inline-flex items-center gap-3 rounded-full border-2 border-[color:var(--border)] bg-[color:var(--panel-muted)] px-5 py-2.5 text-sm font-semibold text-[color:var(--foreground)] transition hover:border-[color:var(--accent)] hover:bg-[color:var(--accent-soft)] hover:text-[color:var(--foreground)]`}
         />
       </div>
     );
@@ -125,7 +155,15 @@ export function PostForm({ locale, t, commonT, authT }: Props) {
     return (
       <div className="mt-8 flex flex-col items-center gap-5 py-10 text-center">
         <div className="flex h-14 w-14 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-green-600">
+          <svg
+            width="26"
+            height="26"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            className="text-green-600"
+          >
             <path d="M20 6 9 17l-5-5" />
           </svg>
         </div>
@@ -152,7 +190,11 @@ export function PostForm({ locale, t, commonT, authT }: Props) {
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="mt-6 grid max-w-xl gap-3 sm:grid-cols-2">
       <label className="flex flex-col gap-1 sm:col-span-2">
         <span className="text-sm font-semibold">{t.fields.title}</span>
-        <input type="text" className={fieldClass(!!errors.title)} {...register("title", { required: t.errors.required })} />
+        <input
+          type="text"
+          className={fieldClass(!!errors.title)}
+          {...register("title", { required: t.errors.required })}
+        />
         {errors.title ? <span className="text-xs text-red-500">{errors.title.message}</span> : null}
       </label>
 
@@ -227,7 +269,13 @@ export function PostForm({ locale, t, commonT, authT }: Props) {
           </select>
           <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-[color:var(--muted)]">
             <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden>
-              <path d="M5 7.5 10 12.5 15 7.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              <path
+                d="M5 7.5 10 12.5 15 7.5"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </span>
         </div>
@@ -246,7 +294,13 @@ export function PostForm({ locale, t, commonT, authT }: Props) {
           </select>
           <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-[color:var(--muted)]">
             <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden>
-              <path d="M5 7.5 10 12.5 15 7.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              <path
+                d="M5 7.5 10 12.5 15 7.5"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </span>
         </div>
@@ -275,7 +329,11 @@ export function PostForm({ locale, t, commonT, authT }: Props) {
 
       <label className="flex flex-col gap-1">
         <span className="text-sm font-semibold">{t.fields.address}</span>
-        <input type="text" className={fieldClass(!!errors.address)} {...register("address", { required: t.errors.required })} />
+        <input
+          type="text"
+          className={fieldClass(!!errors.address)}
+          {...register("address", { required: t.errors.required })}
+        />
         {errors.address ? <span className="text-xs text-red-500">{errors.address.message}</span> : null}
       </label>
 
@@ -296,7 +354,12 @@ export function PostForm({ locale, t, commonT, authT }: Props) {
       ) : null}
 
       <div className="sm:col-span-2">
-        <button type="submit" disabled={isSubmitting} className={`w-full ${ui.buttonPrimary} disabled:opacity-60`}>
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          data-tour="post-submit"
+          className={`w-full ${ui.buttonPrimary} disabled:opacity-60`}
+        >
           {isSubmitting ? "..." : t.submit}
         </button>
       </div>

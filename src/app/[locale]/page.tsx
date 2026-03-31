@@ -44,10 +44,10 @@ export default async function HomePage({ params }: LocalePageProps) {
           <p className={`max-w-2xl text-base leading-8 sm:text-lg ${ui.textMuted}`}>{d.home.subtitle}</p>
 
           <div className="flex flex-wrap items-center justify-center gap-3">
-            <Link href={routes.post(locale)} className={ui.buttonPrimary}>
+            <Link href={routes.post(locale)} className={ui.buttonPrimary} data-tour="home-publish">
               {d.home.publishCta}
             </Link>
-            <Link href={routes.jobs(locale)} className={ui.buttonSecondary}>
+            <Link href={routes.jobs(locale)} className={ui.buttonSecondary} data-tour="home-browse">
               {d.home.browseCta}
             </Link>
           </div>

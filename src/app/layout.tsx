@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Manrope, Noto_Sans_Armenian } from "next/font/google";
 import { GoogleAnalytics } from "@/components/analytics/google-analytics";
+import { TawkChat } from "@/components/analytics/tawk-chat";
 import { defaultLocale } from "@/i18n/config";
 import { localeAlternates, siteDescription, siteName, siteUrl } from "@/lib/seo";
 import { Providers } from "./providers";
@@ -75,12 +76,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang={defaultLocale} suppressHydrationWarning>
       <body className={`${manrope.variable} ${notoSansArmenian.variable}`}>
+        <GoogleAnalytics />
         <Providers>{children}</Providers>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
-        <GoogleAnalytics />
+        <TawkChat />
       </body>
     </html>
   );

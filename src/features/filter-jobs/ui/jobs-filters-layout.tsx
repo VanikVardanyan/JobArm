@@ -47,6 +47,7 @@ export function JobsFiltersLayout({
         <button
           type="button"
           onClick={() => setDrawerOpen(true)}
+          data-tour="jobs-filters"
           className={`inline-flex items-center justify-center rounded-full border border-[color:var(--border)] bg-[color:var(--panel-muted)] px-4 py-2.5 text-sm font-semibold text-[color:var(--foreground)] transition hover:bg-[color:var(--panel-muted-hover)]`}
         >
           {openFilters}
@@ -54,7 +55,7 @@ export function JobsFiltersLayout({
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[280px_1fr] lg:items-start">
-        <aside className="hidden lg:block lg:sticky lg:top-24">
+        <aside className="hidden lg:block lg:sticky lg:top-24" data-tour="jobs-filters">
           <JobFilters {...filterProps} />
         </aside>
 

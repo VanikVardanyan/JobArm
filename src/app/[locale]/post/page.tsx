@@ -29,7 +29,7 @@ export default async function PostPage({ params }: LocalePageProps) {
     <main className="flex flex-col gap-6 pb-12">
       <SectionLink href={routes.home(locale)} label={d.common.backToHome} />
 
-      <section className={`${ui.panel} mx-auto w-full max-w-xl`}>
+      <section className={`${ui.panel} mx-auto w-full max-w-xl`} data-tour="post-form">
         <h1 className="text-xl font-semibold sm:text-2xl">{d.post.title}</h1>
         <PostForm
           locale={locale}

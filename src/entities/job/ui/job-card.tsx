@@ -2,6 +2,7 @@
 
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import { contactActionHref, normalizeContactMethod } from "@/lib/contact-links";
+import { trackEvent } from "@/lib/analytics";
 import { categoryLabels, regionLabels } from "@/lib/jobs";
 import { ui } from "@/components/ui/styles";
 import { cn } from "@/lib/cn";
@@ -147,6 +148,17 @@ export function JobCard({
     dialogRef.current?.showModal();
   };
 
+  const handleContactClick = () => {
+    trackEvent("contact_click", {
+      contact_method: method,
+      job_id: job.id,
+      job_category: job.category,
+      job_region: job.region,
+      is_urgent: job.isUrgent,
+      locale,
+    });
+  };
+
   return (
     <>
       <article className={cn(ui.panelDense, "flex flex-col gap-4 transition hover:shadow-lg")}>
@@ -227,6 +239,7 @@ export function JobCard({
 
         <a
           href={contactHref}
+          onClick={handleContactClick}
           className={cn(ui.buttonPrimary, "mt-auto flex w-full flex-col items-center justify-center gap-1 py-3.5")}
           {...contactLinkProps}
         >

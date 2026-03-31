@@ -5,6 +5,7 @@ import { Controller, useForm } from "react-hook-form";
 import { PatternFormat } from "react-number-format";
 import { useRouter } from "next/navigation";
 import { ui } from "@/components/ui/styles";
+import { trackEvent } from "@/lib/analytics";
 import { categoryLabels, regionLabels } from "@/lib/jobs";
 import { normalizeContactMethod } from "@/lib/contact-links";
 import { toE164AmPhone } from "@/lib/phone";
@@ -95,6 +96,13 @@ export function EditJobForm({ job, locale, postT, dashT }: Props) {
     });
 
     if (!res.ok) { setServerError(dashT.updateError); return; }
+    trackEvent("job_update_success", {
+      locale,
+      job_id: job.id,
+      contact_method: data.contactMethod,
+      region: data.region,
+      category: data.category,
+    });
     setSuccess(true);
     setTimeout(() => {
       router.push(routes.dashboard(locale));

@@ -3,6 +3,7 @@
 import { signIn } from "next-auth/react";
 import { ui } from "@/components/ui/styles";
 import { cn } from "@/lib/cn";
+import { trackEvent } from "@/lib/analytics";
 
 type Props = {
   label: string;
@@ -11,9 +12,18 @@ type Props = {
 };
 
 export function SignInButton({ label, callbackUrl = "/", className }: Props) {
+  const handleClick = () => {
+    trackEvent("sign_in_click", {
+      provider: "google",
+      callback_url: callbackUrl,
+    });
+
+    signIn("google", { callbackUrl });
+  };
+
   return (
     <button
-      onClick={() => signIn("google", { callbackUrl })}
+      onClick={handleClick}
       className={cn(ui.buttonPrimary, className)}
     >
       <GoogleIcon />

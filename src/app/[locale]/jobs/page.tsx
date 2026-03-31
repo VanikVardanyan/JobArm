@@ -153,7 +153,7 @@ export default async function JobsPage({ params, searchParams }: JobsPageProps) 
       </div>
     ) : (
       <>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-2" data-tour="jobs-list">
           {jobs.map((job) => (
             <JobCard
               key={job.id}
@@ -209,7 +209,7 @@ export default async function JobsPage({ params, searchParams }: JobsPageProps) 
                 <p className={`mt-2 text-sm leading-7 ${ui.textMuted}`}>{d.jobs.subtitle}</p>
               </div>
               {session?.user ? (
-                <Link href={routes.post(locale)} className={`inline-flex shrink-0 ${ui.buttonPrimary}`}>
+                <Link href={routes.post(locale)} className={`inline-flex shrink-0 ${ui.buttonPrimary}`} data-tour="jobs-create">
                   {d.common.createTask}
                 </Link>
               ) : null}

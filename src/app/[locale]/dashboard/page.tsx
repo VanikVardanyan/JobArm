@@ -49,12 +49,14 @@ export default async function DashboardPage({ params }: LocalePageProps) {
     <main className="flex flex-col gap-6 pb-12">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">{d.dashboard.title}</h1>
-        <Link href={routes.post(locale)} className={ui.buttonDashboardPrimary}>
+        <Link href={routes.post(locale)} className={ui.buttonDashboardPrimary} data-tour="dashboard-add">
           {d.dashboard.addJob}
         </Link>
       </div>
 
-      <MyJobsList jobs={jobs} locale={locale} t={d.dashboard} urgentLabel={d.common.urgent} />
+      <div data-tour="dashboard-list">
+        <MyJobsList jobs={jobs} locale={locale} t={d.dashboard} urgentLabel={d.common.urgent} />
+      </div>
     </main>
   );
 }
