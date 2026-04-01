@@ -24,6 +24,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
           productName={dictionary.common.productName}
           signInLabel={dictionary.common.signIn}
           signOutLabel={dictionary.common.signOut}
+          browseTasksLabel={dictionary.common.browseTasks}
           dashboardLabel={dictionary.dashboard.cabinetLink}
           themeToggleLight={dictionary.common.themeToggleLight}
           themeToggleDark={dictionary.common.themeToggleDark}

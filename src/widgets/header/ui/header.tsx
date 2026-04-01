@@ -11,11 +11,13 @@ import { SignInButton } from "@/features/auth/ui/sign-in-button";
 import { UserMenu } from "@/features/auth/ui/user-menu";
 import { routes } from "@/lib/routes";
 import type { Locale } from "@/types/i18n";
+import { ui } from "@/components/ui/styles";
 
 type Props = {
   locale: Locale;
   signInLabel: string;
   signOutLabel: string;
+  browseTasksLabel: string;
   productName: string;
   dashboardLabel: string;
   themeToggleLight: string;
@@ -26,15 +28,7 @@ type Props = {
 
 function BrandLogo({ label }: { label: string }) {
   return (
-    <svg
-      width="124"
-      height="28"
-      viewBox="0 0 124 28"
-      fill="none"
-      role="img"
-      aria-label={label}
-      className="h-7 w-auto"
-    >
+    <svg width="124" height="28" viewBox="0 0 124 28" fill="none" role="img" aria-label={label} className="h-7 w-auto">
       <rect x="1" y="1" width="26" height="26" rx="9" fill="var(--foreground)" />
       <path
         d="M9.5 7.5C7.567 7.5 6 9.067 6 11v6.75C6 21.754 9.246 25 13.25 25h5.25C20.433 25 22 23.433 22 21.5v-6.75C22 10.746 18.754 7.5 14.75 7.5H9.5Z"
@@ -80,6 +74,7 @@ export function Header({
   locale,
   signInLabel,
   signOutLabel,
+  browseTasksLabel,
   productName,
   dashboardLabel,
   themeToggleLight,
@@ -123,7 +118,11 @@ export function Header({
         stacked
       />
     ) : (
-      <SignInButton label={signInLabel} callbackUrl={routes.dashboard(locale)} className="w-full justify-center gap-2" />
+      <SignInButton
+        label={signInLabel}
+        callbackUrl={routes.dashboard(locale)}
+        className="w-full justify-center gap-2"
+      />
     );
 
   return (
@@ -138,6 +137,9 @@ export function Header({
       </Link>
 
       <div className="hidden items-center gap-2 md:gap-3 lg:flex">
+        <Link href={routes.jobs(locale)} className={ui.buttonSecondary}>
+          {browseTasksLabel}
+        </Link>
         <ThemeToggle themeLightLabel={themeToggleLight} themeDarkLabel={themeToggleDark} />
         <LanguageSwitcher currentLocale={locale} />
         {authBlock}
@@ -171,6 +173,9 @@ export function Header({
                 <span className="text-sm font-semibold text-[color:var(--muted)]">{openMenuLabel}</span>
                 <ThemeToggle themeLightLabel={themeToggleLight} themeDarkLabel={themeToggleDark} />
               </div>
+              <Link href={routes.jobs(locale)} className={`${ui.buttonSecondary} w-full justify-center`}>
+                {browseTasksLabel}
+              </Link>
               <LanguageSwitcher currentLocale={locale} />
               {authBlockStacked}
             </div>
