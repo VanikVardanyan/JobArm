@@ -1,8 +1,8 @@
 import { normalizeContactMethod } from "./contact-links";
 import { toE164AmPhone } from "./phone";
-import type { ContactMethod, JobCategory, Region } from "../types/jobs";
+import type { ContactMethod, JobCategory, Region } from "@/types/jobs";
 
-const jobCategories = [
+const resumeCategories = [
   "loaders",
   "moving",
   "loading",
@@ -13,7 +13,7 @@ const jobCategories = [
   "other",
 ] as const satisfies readonly JobCategory[];
 
-const jobRegions = [
+const resumeRegions = [
   "yerevan",
   "aragatsotn",
   "ararat",
@@ -27,13 +27,9 @@ const jobRegions = [
   "vayots-dzor",
 ] as const satisfies readonly Region[];
 
-const jobStatuses = ["active", "closed"] as const;
-const priceTypes = ["fixed", "hourly"] as const;
-
+const resumeStatuses = ["active", "closed"] as const;
 const titleMinLength = 3;
 const titleMaxLength = 120;
-const addressMinLength = 5;
-const addressMaxLength = 160;
 const descriptionMaxLength = 2000;
 const priceMaxLength = 60;
 const publicContactNameMaxLength = 80;
@@ -42,24 +38,19 @@ type ValidationSuccess<T> = { ok: true; data: T };
 type ValidationFailure = { ok: false; error: string };
 type ValidationResult<T> = ValidationSuccess<T> | ValidationFailure;
 
-export type ValidatedCreateJobInput = {
+export type ValidatedCreateResumeInput = {
   title: string;
   description: string | null;
   category: JobCategory;
   price: string | null;
-  priceType: "fixed" | "hourly";
   region: Region;
-  address: string;
-  isUrgent: boolean;
-  date: string | null;
-  time: string | null;
   contactPhone: string;
   contactMethod: ContactMethod;
   publicContactName: string | null;
 };
 
-export type ValidatedUpdateJobInput = Partial<
-  ValidatedCreateJobInput & {
+export type ValidatedUpdateResumeInput = Partial<
+  ValidatedCreateResumeInput & {
     status: "active" | "closed";
   }
 >;
@@ -77,10 +68,7 @@ function cleanText(value: unknown): string | null {
   return normalized.length > 0 ? normalized : null;
 }
 
-function parseOptionalText(
-  value: unknown,
-  maxLength: number,
-): ValidationResult<string | null> {
+function parseOptionalText(value: unknown, maxLength: number): ValidationResult<string | null> {
   if (value === undefined || value === null || value === "") {
     return { ok: true, data: null };
   }
@@ -107,15 +95,12 @@ function parseRequiredText(
   if (!text) {
     return { ok: false, error: `${fieldName} is required` };
   }
-
   if (text.length < minLength) {
     return { ok: false, error: `${fieldName} is too short` };
   }
-
   if (text.length > maxLength) {
     return { ok: false, error: `${fieldName} is too long` };
   }
-
   return { ok: true, data: text };
 }
 
@@ -127,31 +112,6 @@ function parseEnumValue<T extends readonly string[]>(
   if (typeof value !== "string" || !allowed.includes(value)) {
     return { ok: false, error: `Invalid ${fieldName}` };
   }
-
-  return { ok: true, data: value };
-}
-
-function parseOptionalDate(value: unknown): ValidationResult<string | null> {
-  if (value === undefined || value === null || value === "") {
-    return { ok: true, data: null };
-  }
-
-  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-    return { ok: false, error: "Invalid date" };
-  }
-
-  return { ok: true, data: value };
-}
-
-function parseOptionalTime(value: unknown): ValidationResult<string | null> {
-  if (value === undefined || value === null || value === "") {
-    return { ok: true, data: null };
-  }
-
-  if (typeof value !== "string" || !/^\d{2}:\d{2}$/.test(value)) {
-    return { ok: false, error: "Invalid time" };
-  }
-
   return { ok: true, data: value };
 }
 
@@ -168,21 +128,7 @@ function parseRequiredPhone(value: unknown): ValidationResult<string> {
   return { ok: true, data: phone };
 }
 
-function parseOptionalBoolean(value: unknown): boolean | undefined {
-  return typeof value === "boolean" ? value : undefined;
-}
-
-function assignIfPresent<T extends Record<string, unknown>, K extends keyof T>(
-  target: Partial<T>,
-  key: K,
-  value: T[K] | undefined,
-) {
-  if (value !== undefined) {
-    target[key] = value;
-  }
-}
-
-export function validateCreateJobInput(body: unknown): ValidationResult<ValidatedCreateJobInput> {
+export function validateCreateResumeInput(body: unknown): ValidationResult<ValidatedCreateResumeInput> {
   if (!isRecord(body)) {
     return { ok: false, error: "Invalid request body" };
   }
@@ -190,14 +136,11 @@ export function validateCreateJobInput(body: unknown): ValidationResult<Validate
   const title = parseRequiredText(body.title, titleMinLength, titleMaxLength, "Title");
   if (!title.ok) return title;
 
-  const category = parseEnumValue(body.category, jobCategories, "category");
+  const category = parseEnumValue(body.category, resumeCategories, "category");
   if (!category.ok) return category;
 
-  const region = parseEnumValue(body.region, jobRegions, "region");
+  const region = parseEnumValue(body.region, resumeRegions, "region");
   if (!region.ok) return region;
-
-  const address = parseRequiredText(body.address, addressMinLength, addressMaxLength, "Address");
-  if (!address.ok) return address;
 
   const contactPhone = parseRequiredPhone(body.contactPhone);
   if (!contactPhone.ok) return contactPhone;
@@ -207,17 +150,6 @@ export function validateCreateJobInput(body: unknown): ValidationResult<Validate
 
   const price = parseOptionalText(body.price, priceMaxLength);
   if (!price.ok) return price;
-
-  const priceType = body.priceType === undefined
-    ? { ok: true as const, data: "fixed" as const }
-    : parseEnumValue(body.priceType, priceTypes, "price type");
-  if (!priceType.ok) return priceType;
-
-  const date = parseOptionalDate(body.date);
-  if (!date.ok) return date;
-
-  const time = parseOptionalTime(body.time);
-  if (!time.ok) return time;
 
   const publicContactName = parseOptionalText(body.publicContactName, publicContactNameMaxLength);
   if (!publicContactName.ok) return publicContactName;
@@ -229,12 +161,7 @@ export function validateCreateJobInput(body: unknown): ValidationResult<Validate
       description: description.data,
       category: category.data,
       price: price.data,
-      priceType: priceType.data,
       region: region.data,
-      address: address.data,
-      isUrgent: parseOptionalBoolean(body.isUrgent) ?? false,
-      date: date.data,
-      time: time.data,
       contactPhone: contactPhone.data,
       contactMethod: normalizeContactMethod(
         typeof body.contactMethod === "string" ? body.contactMethod : undefined,
@@ -244,12 +171,12 @@ export function validateCreateJobInput(body: unknown): ValidationResult<Validate
   };
 }
 
-export function validateUpdateJobInput(body: unknown): ValidationResult<ValidatedUpdateJobInput> {
+export function validateUpdateResumeInput(body: unknown): ValidationResult<ValidatedUpdateResumeInput> {
   if (!isRecord(body)) {
     return { ok: false, error: "Invalid request body" };
   }
 
-  const data: ValidatedUpdateJobInput = {};
+  const data: ValidatedUpdateResumeInput = {};
 
   if (body.title !== undefined) {
     const title = parseRequiredText(body.title, titleMinLength, titleMaxLength, "Title");
@@ -264,7 +191,7 @@ export function validateUpdateJobInput(body: unknown): ValidationResult<Validate
   }
 
   if (body.category !== undefined) {
-    const category = parseEnumValue(body.category, jobCategories, "category");
+    const category = parseEnumValue(body.category, resumeCategories, "category");
     if (!category.ok) return category;
     data.category = category.data;
   }
@@ -275,42 +202,10 @@ export function validateUpdateJobInput(body: unknown): ValidationResult<Validate
     data.price = price.data;
   }
 
-  if (body.priceType !== undefined) {
-    const priceType = parseEnumValue(body.priceType, priceTypes, "price type");
-    if (!priceType.ok) return priceType;
-    data.priceType = priceType.data;
-  }
-
   if (body.region !== undefined) {
-    const region = parseEnumValue(body.region, jobRegions, "region");
+    const region = parseEnumValue(body.region, resumeRegions, "region");
     if (!region.ok) return region;
     data.region = region.data;
-  }
-
-  if (body.address !== undefined) {
-    const address = parseRequiredText(body.address, addressMinLength, addressMaxLength, "Address");
-    if (!address.ok) return address;
-    data.address = address.data;
-  }
-
-  assignIfPresent(data, "isUrgent", parseOptionalBoolean(body.isUrgent));
-
-  if (body.date !== undefined) {
-    const date = parseOptionalDate(body.date);
-    if (!date.ok) return date;
-    data.date = date.data;
-  }
-
-  if (body.time !== undefined) {
-    const time = parseOptionalTime(body.time);
-    if (!time.ok) return time;
-    data.time = time.data;
-  }
-
-  if (body.status !== undefined) {
-    const status = parseEnumValue(body.status, jobStatuses, "status");
-    if (!status.ok) return status;
-    data.status = status.data;
   }
 
   if (body.contactPhone !== undefined) {
@@ -319,17 +214,22 @@ export function validateUpdateJobInput(body: unknown): ValidationResult<Validate
     data.contactPhone = contactPhone.data;
   }
 
+  if (body.contactMethod !== undefined) {
+    data.contactMethod = normalizeContactMethod(
+      typeof body.contactMethod === "string" ? body.contactMethod : undefined,
+    );
+  }
+
   if (body.publicContactName !== undefined) {
     const publicContactName = parseOptionalText(body.publicContactName, publicContactNameMaxLength);
     if (!publicContactName.ok) return publicContactName;
     data.publicContactName = publicContactName.data;
   }
 
-  if (body.contactMethod !== undefined) {
-    if (typeof body.contactMethod !== "string") {
-      return { ok: false, error: "Invalid contact method" };
-    }
-    data.contactMethod = normalizeContactMethod(body.contactMethod);
+  if (body.status !== undefined) {
+    const status = parseEnumValue(body.status, resumeStatuses, "status");
+    if (!status.ok) return status;
+    data.status = status.data;
   }
 
   return { ok: true, data };

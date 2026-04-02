@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { SectionLink } from "@/components/section-link";
-import { JobCard, type DbJob } from "@/entities/job/ui/job-card";
+import { JobCard } from "@/entities/job/ui/job-card";
 import { JobsFiltersLayout } from "@/features/filter-jobs/ui/jobs-filters-layout";
 import { JobsPageActions } from "@/features/jobs-list/ui/jobs-page-actions";
 import { JobsNavProvider } from "@/features/jobs-list/ui/jobs-nav-provider";

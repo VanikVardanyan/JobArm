@@ -7,7 +7,10 @@ import type { Locale } from "@/types/i18n";
 export const LocaleRouteSegment = {
   jobs: "jobs",
   post: "post",
+  workers: "workers",
+  workersPost: "post",
   dashboard: "dashboard",
+  resumes: "resumes",
   edit: "edit",
   auth: "auth",
   signIn: "signin",
@@ -31,10 +34,23 @@ export const routes = {
   home: (locale: Locale) => toRoute(underLocale(locale)),
   jobs: (locale: Locale) => toRoute(underLocale(locale, LocaleRouteSegment.jobs)),
   post: (locale: Locale) => toRoute(underLocale(locale, LocaleRouteSegment.post)),
+  workers: (locale: Locale) => toRoute(underLocale(locale, LocaleRouteSegment.workers)),
+  workersPost: (locale: Locale) =>
+    toRoute(underLocale(locale, LocaleRouteSegment.workers, LocaleRouteSegment.workersPost)),
   dashboard: (locale: Locale) => toRoute(underLocale(locale, LocaleRouteSegment.dashboard)),
   dashboardEditJob: (locale: Locale, jobId: string) =>
     toRoute(
       underLocale(locale, LocaleRouteSegment.dashboard, LocaleRouteSegment.edit, jobId),
+    ),
+  dashboardEditResume: (locale: Locale, resumeId: string) =>
+    toRoute(
+      underLocale(
+        locale,
+        LocaleRouteSegment.dashboard,
+        LocaleRouteSegment.resumes,
+        LocaleRouteSegment.edit,
+        resumeId,
+      ),
     ),
   authSignIn: (locale: Locale) =>
     toRoute(underLocale(locale, LocaleRouteSegment.auth, LocaleRouteSegment.signIn)),
@@ -45,6 +61,13 @@ export type JobsListQuery = {
   region?: string;
   urgent?: string;
   /** Сначала старые — только `old`; новые по умолчанию (параметр не нужен). */
+  sort?: "old";
+  page?: number;
+};
+
+export type WorkersListQuery = {
+  category?: string;
+  region?: string;
   sort?: "old";
   page?: number;
 };
@@ -71,4 +94,22 @@ export function jobsListWithQuery(locale: Locale, q: JobsListQuery): Route {
   }
   const qs = p.toString();
   return toRoute(`/${locale}/${LocaleRouteSegment.jobs}${qs ? `?${qs}` : ""}`);
+}
+
+export function workersListWithQuery(locale: Locale, q: WorkersListQuery): Route {
+  const p = new URLSearchParams();
+  if (q.category) {
+    p.set("category", q.category);
+  }
+  if (q.region) {
+    p.set("region", q.region);
+  }
+  if (q.sort === "old") {
+    p.set("sort", "old");
+  }
+  if (q.page !== undefined && q.page > 1) {
+    p.set("page", String(q.page));
+  }
+  const qs = p.toString();
+  return toRoute(`/${locale}/${LocaleRouteSegment.workers}${qs ? `?${qs}` : ""}`);
 }

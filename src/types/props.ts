@@ -6,6 +6,10 @@ export type LocaleRouteParams = {
   locale: string;
 };
 
+export type LocaleEntityRouteParams = LocaleRouteParams & {
+  id: string;
+};
+
 export type LocalePageProps = {
   params: Promise<LocaleRouteParams>;
 };
@@ -13,6 +17,10 @@ export type LocalePageProps = {
 export type LocaleLayoutProps = {
   children: ReactNode;
   params: Promise<LocaleRouteParams>;
+};
+
+export type LocaleEntityPageProps = {
+  params: Promise<LocaleEntityRouteParams>;
 };
 
 export type LanguageSwitcherProps = {

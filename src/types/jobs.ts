@@ -27,3 +27,27 @@ export type JobPreview = {
   publishedAt: Record<Locale, string>;
   urgent: boolean;
 };
+
+export type JobPublicAuthor = {
+  publicContactName: string | null;
+  author: {
+    name: string | null;
+  };
+};
+
+export type ResumeRecord = {
+  id: string;
+  title: string;
+  description: string | null;
+  category: string;
+  price: string | null;
+  region: string;
+  contactMethod: string;
+  contactPhone: string;
+  publicContactName: string | null;
+  status: string;
+  createdAt: Date;
+  author: {
+    name: string | null;
+  };
+};

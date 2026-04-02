@@ -59,6 +59,37 @@ export default async function HomePage({ params }: LocalePageProps) {
         </div>
       </section>
 
+      <section aria-labelledby="home-paths-title" className="grid gap-4 md:grid-cols-2">
+        <h2 id="home-paths-title" className="sr-only">
+          {d.home.title}
+        </h2>
+        <article className={`${ui.panelDense} flex flex-col gap-4`}>
+          <h3 className="text-xl font-semibold">{d.home.paths.hireTitle}</h3>
+          <p className={`text-sm leading-7 ${ui.textMuted}`}>{d.home.paths.hireDescription}</p>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Link href={routes.post(locale)} className={ui.buttonPrimary}>
+              {d.home.paths.hirePrimary}
+            </Link>
+            <Link href={routes.jobs(locale)} className={ui.buttonSecondary}>
+              {d.home.paths.hireSecondary}
+            </Link>
+          </div>
+        </article>
+
+        <article className={`${ui.panelDense} flex flex-col gap-4`}>
+          <h3 className="text-xl font-semibold">{d.home.paths.workTitle}</h3>
+          <p className={`text-sm leading-7 ${ui.textMuted}`}>{d.home.paths.workDescription}</p>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Link href={routes.workersPost(locale)} className={ui.buttonPrimary}>
+              {d.home.paths.workPrimary}
+            </Link>
+            <Link href={routes.workers(locale)} className={ui.buttonSecondary}>
+              {d.home.paths.workSecondary}
+            </Link>
+          </div>
+        </article>
+      </section>
+
       <section aria-labelledby="home-stats-heading" className="px-1">
         <h2 id="home-stats-heading" className="sr-only">
           {d.home.badge}

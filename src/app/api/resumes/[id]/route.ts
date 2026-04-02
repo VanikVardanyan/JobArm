@@ -1,30 +1,25 @@
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { authOptions } from "@/lib/auth";
-import { validateUpdateJobInput } from "@/lib/job-input";
+import { validateUpdateResumeInput } from "@/lib/resume-input";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { getRequestIp } from "@/lib/request-ip";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
-// GET /api/jobs/[id] — публичная страница заявки
 export async function GET(_: Request, { params }: RouteContext) {
   const { id } = await params;
-
-  const job = await prisma.job.findUnique({
+  const resume = await prisma.resume.findUnique({
     where: { id },
-    include: { author: { select: { name: true, image: true } } },
+    include: { author: { select: { name: true } } },
   });
-
-  if (!job) {
+  if (!resume) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
-
-  return NextResponse.json(job);
+  return NextResponse.json(resume);
 }
 
-// PATCH /api/jobs/[id] — редактировать / изменить статус (только автор)
 export async function PATCH(request: Request, { params }: RouteContext) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) {
@@ -32,30 +27,25 @@ export async function PATCH(request: Request, { params }: RouteContext) {
   }
 
   const rateLimit = checkRateLimit({
-    key: `jobs:update:${getRequestIp(request)}:${session.user.email}`,
+    key: `resumes:update:${getRequestIp(request)}:${session.user.email}`,
     limit: 20,
     windowMs: 10 * 60 * 1000,
   });
   if (!rateLimit.ok) {
     return NextResponse.json(
       { error: "Too many update attempts. Please try again later." },
-      {
-        status: 429,
-        headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
-      },
+      { status: 429, headers: { "Retry-After": String(rateLimit.retryAfterSeconds) } },
     );
   }
 
   const { id } = await params;
-  const job = await prisma.job.findUnique({ where: { id } });
-  if (!job) {
+  const resume = await prisma.resume.findUnique({ where: { id } });
+  if (!resume) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
-  });
-  if (!user || job.authorId !== user.id) {
+  const user = await prisma.user.findUnique({ where: { email: session.user.email } });
+  if (!user || resume.authorId !== user.id) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -66,7 +56,7 @@ export async function PATCH(request: Request, { params }: RouteContext) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const parsed = validateUpdateJobInput(body);
+  const parsed = validateUpdateResumeInput(body);
   if (!parsed.ok) {
     return NextResponse.json({ error: parsed.error }, { status: 400 });
   }
@@ -75,29 +65,19 @@ export async function PATCH(request: Request, { params }: RouteContext) {
     return NextResponse.json({ error: "No fields to update" }, { status: 400 });
   }
 
-  try {
-    const updated = await prisma.job.update({
-      where: { id },
-      data: {
-        ...parsed.data,
-        ...(parsed.data.publicContactName !== undefined
-          ? { publicContactName: parsed.data.publicContactName ?? user.name ?? null }
-          : {}),
-      },
-    });
-    return NextResponse.json(updated);
-  } catch (e) {
-    console.error("[PATCH /api/jobs/[id]]", e);
-    const message = e instanceof Error ? e.message : String(e);
-    const payload =
-      process.env.NODE_ENV === "development"
-        ? { error: "Update failed", details: message }
-        : { error: "Update failed" };
-    return NextResponse.json(payload, { status: 500 });
-  }
+  const updated = await prisma.resume.update({
+    where: { id },
+    data: {
+      ...parsed.data,
+      ...(parsed.data.publicContactName !== undefined
+        ? { publicContactName: parsed.data.publicContactName ?? user.name ?? null }
+        : {}),
+    },
+  });
+
+  return NextResponse.json(updated);
 }
 
-// DELETE /api/jobs/[id] — удалить заявку (только автор)
 export async function DELETE(request: Request, { params }: RouteContext) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) {
@@ -105,34 +85,28 @@ export async function DELETE(request: Request, { params }: RouteContext) {
   }
 
   const rateLimit = checkRateLimit({
-    key: `jobs:delete:${getRequestIp(request)}:${session.user.email}`,
+    key: `resumes:delete:${getRequestIp(request)}:${session.user.email}`,
     limit: 10,
     windowMs: 10 * 60 * 1000,
   });
   if (!rateLimit.ok) {
     return NextResponse.json(
       { error: "Too many delete attempts. Please try again later." },
-      {
-        status: 429,
-        headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
-      },
+      { status: 429, headers: { "Retry-After": String(rateLimit.retryAfterSeconds) } },
     );
   }
 
   const { id } = await params;
-  const job = await prisma.job.findUnique({ where: { id } });
-  if (!job) {
+  const resume = await prisma.resume.findUnique({ where: { id } });
+  if (!resume) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
-  });
-  if (!user || job.authorId !== user.id) {
+  const user = await prisma.user.findUnique({ where: { email: session.user.email } });
+  if (!user || resume.authorId !== user.id) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  await prisma.job.delete({ where: { id } });
-
+  await prisma.resume.delete({ where: { id } });
   return NextResponse.json({ success: true });
 }

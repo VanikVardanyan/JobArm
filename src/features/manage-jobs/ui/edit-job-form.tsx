@@ -26,6 +26,8 @@ type Job = {
   isUrgent: boolean;
   contactPhone: string;
   contactMethod: string;
+  publicContactName: string | null;
+  author: { name: string | null };
 };
 
 type Props = {
@@ -46,6 +48,7 @@ type FormValues = {
   time: string;
   phone: string;
   contactMethod: ContactMethod;
+  publicContactName: string;
 };
 
 const CATEGORIES = Object.keys(categoryLabels) as JobCategory[];
@@ -68,6 +71,7 @@ export function EditJobForm({ job, locale, postT, dashT }: Props) {
       time: job.time ?? "",
       phone: job.contactPhone,
       contactMethod: normalizeContactMethod(job.contactMethod),
+      publicContactName: job.publicContactName ?? job.author.name ?? "",
     },
   });
 
@@ -92,6 +96,7 @@ export function EditJobForm({ job, locale, postT, dashT }: Props) {
         time: data.time || null,
         contactPhone,
         contactMethod: data.contactMethod,
+        publicContactName: data.publicContactName || null,
       }),
     });
 
@@ -134,6 +139,12 @@ export function EditJobForm({ job, locale, postT, dashT }: Props) {
         <input type="text" className={fieldClass(!!errors.title)}
           {...register("title", { required: postT.errors.required })} />
         {errors.title && <span className="text-xs text-red-500">{errors.title.message}</span>}
+      </label>
+
+      <label className="flex flex-col gap-1">
+        <span className="text-sm font-semibold">{postT.fields.publicContactName}</span>
+        <input type="text" className={ui.field} {...register("publicContactName")} />
+        <p className={`text-xs leading-relaxed ${ui.textMuted}`}>{postT.publicContactNameHint}</p>
       </label>
 
       <label className="flex flex-col gap-1">

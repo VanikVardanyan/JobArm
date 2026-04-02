@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { routes } from "@/lib/routes";
 import { getDictionary, getLocale } from "@/i18n/get-dictionary";
 import { MyJobsList } from "@/features/manage-jobs/ui/my-jobs-list";
+import { MyResumesList } from "@/features/manage-resumes/ui/my-resumes-list";
 import { ui } from "@/components/ui/styles";
 import { pageMetadata } from "@/lib/seo";
 import type { LocalePageProps } from "@/types/props";
@@ -44,6 +45,10 @@ export default async function DashboardPage({ params }: LocalePageProps) {
     where: { authorId: user.id },
     orderBy: { createdAt: "desc" },
   });
+  const resumes = await prisma.resume.findMany({
+    where: { authorId: user.id },
+    orderBy: { createdAt: "desc" },
+  });
 
   return (
     <main className="flex flex-col gap-6 pb-12">
@@ -56,6 +61,17 @@ export default async function DashboardPage({ params }: LocalePageProps) {
 
       <div data-tour="dashboard-list">
         <MyJobsList jobs={jobs} locale={locale} t={d.dashboard} urgentLabel={d.common.urgent} />
+      </div>
+
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-semibold">{d.dashboard.resumesTitle}</h2>
+        <Link href={routes.workersPost(locale)} className={ui.buttonDashboardPrimary}>
+          {d.dashboard.addResume}
+        </Link>
+      </div>
+
+      <div>
+        <MyResumesList resumes={resumes} locale={locale} t={d.dashboard} />
       </div>
     </main>
   );

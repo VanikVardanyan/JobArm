@@ -1,3 +1,4 @@
+import type { Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { authOptions } from "@/lib/auth";
@@ -38,8 +39,7 @@ export async function GET(request: Request) {
 
   const total = await prisma.job.count({ where });
   const totalPages = total === 0 ? 0 : Math.ceil(total / JOBS_PAGE_SIZE);
-  const safePage =
-    totalPages > 0 ? Math.min(page, totalPages) : 1;
+  const safePage = totalPages > 0 ? Math.min(page, totalPages) : 1;
   const skip = (safePage - 1) * JOBS_PAGE_SIZE;
 
   const jobs = await prisma.job.findMany({
@@ -79,7 +79,7 @@ export async function POST(request: Request) {
       {
         status: 429,
         headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
-      },
+      }
     );
   }
 
@@ -102,8 +102,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: parsed.error }, { status: 400 });
   }
 
+  const { publicContactName, ...jobFields } = parsed.data;
+
   const job = await prisma.job.create({
-    data: { ...parsed.data, authorId: user.id },
+    data: {
+      ...jobFields,
+      publicContactName: publicContactName ?? user.name ?? null,
+      author: { connect: { id: user.id } },
+    } as Prisma.JobCreateInput,
   });
 
   return NextResponse.json(job, { status: 201 });

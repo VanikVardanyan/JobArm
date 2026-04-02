@@ -46,6 +46,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   jobs          Job[]
+  resumes       Resume[]
 }
 
 model VerificationToken {
@@ -72,6 +73,8 @@ model Job {
   /** Как связаться: звонок, Telegram или WhatsApp (номер в contactPhone — E.164). */
   contactMethod String   @default("phone")
   contactPhone  String
+  /** Публичное имя контакта в карточке заявки; по умолчанию берется из Google-профиля автора. */
+  publicContactName String?
   authorId      String
   author        User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   createdAt    DateTime @default(now())
@@ -82,4 +85,26 @@ model Job {
   @@index([category])
   @@index([region])
   @@index([isUrgent])
+}
+
+model Resume {
+  id                String   @id @default(cuid())
+  title             String
+  description       String?
+  category          String
+  price             String?
+  region            String
+  contactMethod     String   @default("phone")
+  contactPhone      String
+  publicContactName String?
+  status            String   @default("active")
+  authorId          String
+  author            User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([status, createdAt(sort: Desc)])
+  @@index([authorId, createdAt(sort: Desc)])
+  @@index([category])
+  @@index([region])
 }

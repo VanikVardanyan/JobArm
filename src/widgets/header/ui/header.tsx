@@ -18,6 +18,7 @@ type Props = {
   signInLabel: string;
   signOutLabel: string;
   browseTasksLabel: string;
+  browseWorkersLabel: string;
   productName: string;
   dashboardLabel: string;
   themeToggleLight: string;
@@ -75,6 +76,7 @@ export function Header({
   signInLabel,
   signOutLabel,
   browseTasksLabel,
+  browseWorkersLabel,
   productName,
   dashboardLabel,
   themeToggleLight,
@@ -140,6 +142,9 @@ export function Header({
         <Link href={routes.jobs(locale)} className={ui.buttonSecondary}>
           {browseTasksLabel}
         </Link>
+        <Link href={routes.workers(locale)} className={ui.buttonSecondary}>
+          {browseWorkersLabel}
+        </Link>
         <ThemeToggle themeLightLabel={themeToggleLight} themeDarkLabel={themeToggleDark} />
         <LanguageSwitcher currentLocale={locale} />
         {authBlock}
@@ -175,6 +180,9 @@ export function Header({
               </div>
               <Link href={routes.jobs(locale)} className={`${ui.buttonSecondary} w-full justify-center`}>
                 {browseTasksLabel}
+              </Link>
+              <Link href={routes.workers(locale)} className={`${ui.buttonSecondary} w-full justify-center`}>
+                {browseWorkersLabel}
               </Link>
               <LanguageSwitcher currentLocale={locale} />
               {authBlockStacked}

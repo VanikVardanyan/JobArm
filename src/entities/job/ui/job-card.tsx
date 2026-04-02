@@ -7,9 +7,9 @@ import { categoryLabels, regionLabels } from "@/lib/jobs";
 import { ui } from "@/components/ui/styles";
 import { cn } from "@/lib/cn";
 import type { Locale } from "@/types/i18n";
-import type { JobCategory, Region } from "@/types/jobs";
+import type { JobCategory, JobPublicAuthor, Region } from "@/types/jobs";
 
-export type DbJob = {
+export type DbJob = JobPublicAuthor & {
   id: string;
   title: string;
   description: string | null;
@@ -21,7 +21,6 @@ export type DbJob = {
   contactPhone: string;
   contactMethod: string;
   createdAt: Date;
-  author: { name: string | null };
 };
 
 type Props = {
@@ -233,8 +232,10 @@ export function JobCard({
           </div>
         </div>
 
-        {job.author.name && (
-          <p className={cn("text-xs", ui.textMuted)}>{job.author.name}</p>
+        {(job.publicContactName ?? job.author.name) && (
+          <p className={cn("text-xs", ui.textMuted)}>
+            {job.publicContactName ?? job.author.name}
+          </p>
         )}
 
         <a

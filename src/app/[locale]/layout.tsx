@@ -25,6 +25,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
           signInLabel={dictionary.common.signIn}
           signOutLabel={dictionary.common.signOut}
           browseTasksLabel={dictionary.common.browseTasks}
+          browseWorkersLabel={dictionary.common.browseWorkers}
           dashboardLabel={dictionary.dashboard.cabinetLink}
           themeToggleLight={dictionary.common.themeToggleLight}
           themeToggleDark={dictionary.common.themeToggleDark}
