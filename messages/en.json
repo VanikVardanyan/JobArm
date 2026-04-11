@@ -1,0 +1,69 @@
+{
+  "header": {
+    "title": "Jobarm"
+  },
+  "home": {
+    "createButton": "+ Post a task",
+    "createButtonShort": "Post a task",
+    "heroTitle": "A quick fix to your problem",
+    "heroSubtitle": "Find someone for a one-off task — no signup, in under a minute",
+    "activeTasks": "active tasks",
+    "noTasks": "No listings yet. Be the first!",
+    "myBadge": "My listing",
+    "readMore": "Read more",
+    "collapse": "Collapse",
+    "call": "Call",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirmDelete": "Delete this listing?",
+    "cancel": "Cancel",
+    "hoursAgo": "{count}h ago",
+    "minutesAgo": "{count}m ago",
+    "daysAgo": "{count}d ago",
+    "justNow": "Just now"
+  },
+  "create": {
+    "title": "Post a task",
+    "subtitle": "Describe the task and leave a phone number. Workers will call you.",
+    "back": "Back",
+    "description": "Task description",
+    "descriptionPlaceholder": "Describe what needs to be done...",
+    "budget": "Budget (֏)",
+    "budgetPlaceholder": "e.g. 5000",
+    "phone": "Phone",
+    "phonePlaceholder": "+374 XX XXX XXX",
+    "submit": "Publish",
+    "submitting": "Publishing...",
+    "success": "Task published!",
+    "phoneError": "Enter a complete phone number",
+    "limitError": "Maximum 3 active listings per phone number",
+    "error": "Error publishing. Please try again."
+  },
+  "edit": {
+    "title": "Edit task",
+    "submit": "Save",
+    "submitting": "Saving...",
+    "success": "Task updated!",
+    "error": "Error saving.",
+    "notFound": "Task not found",
+    "unauthorized": "No access to this task"
+  },
+  "footer": {
+    "privacy": "Privacy Policy",
+    "copy": "© 2026 Jobarm"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "intro": "We take your privacy seriously.",
+    "collect": "What we collect",
+    "collectText": "Phone number, task description, and budget — only what you enter yourself.",
+    "why": "Why",
+    "whyText": "To connect clients and workers.",
+    "retention": "Retention period",
+    "retentionText": "7 days. After that, data is automatically deleted.",
+    "sharing": "Third-party sharing",
+    "sharingText": "We do not share your data with third parties.",
+    "delete": "How to delete",
+    "deleteText": "Click the \"Delete\" button on your listing card."
+  }
+}

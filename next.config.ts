@@ -1,21 +1,13 @@
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
+import path from "path";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
-  typedRoutes: true,
-  outputFileTracingRoot: join(__dirname),
-  images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "lh3.googleusercontent.com",
-      },
-    ],
+  turbopack: {
+    root: path.resolve(__dirname),
   },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

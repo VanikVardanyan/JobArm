@@ -1,138 +1,36 @@
-# JobArm
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-Job board for Armenia built with Next.js, Prisma, PostgreSQL, and NextAuth.
+## Getting Started
 
-## Stack
-
-- Next.js 15
-- React 19
-- Prisma
-- PostgreSQL
-- NextAuth with Google login
-
-## Local setup
-
-1. Use Node.js 20.
-2. Install dependencies:
-
-```bash
-npm install
-```
-
-3. Create local env file:
-
-```bash
-cp .env.example .env
-```
-
-4. Fill these variables in `.env`:
-
-- `DATABASE_URL`: pooled PostgreSQL connection string for the app
-- `DIRECT_URL`: direct PostgreSQL connection string for Prisma migrations
-- `NEXTAUTH_URL`: `http://localhost:3000` locally
-- `NEXTAUTH_SECRET`: random long secret
-- `GOOGLE_CLIENT_ID`: Google OAuth client id
-- `GOOGLE_CLIENT_SECRET`: Google OAuth client secret
-- `NEXT_PUBLIC_TAWK_PROPERTY_ID`: optional `tawk.to` property id for the live chat widget
-- `NEXT_PUBLIC_TAWK_WIDGET_ID`: optional widget id from `tawk.to` (`default` for the default widget)
-
-5. Apply migrations:
-
-```bash
-npm run db:deploy
-```
-
-6. Start the app:
+First, run the development server:
 
 ```bash
 npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-## Database notes
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-This project uses Prisma with PostgreSQL.
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-- `DATABASE_URL` is used by the running app
-- `DIRECT_URL` is used by Prisma for schema migrations
-- For Supabase, `DATABASE_URL` should usually use the pooler connection
-- For Supabase, `DIRECT_URL` should usually use the direct port `5432`
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Vercel deploy
+## Learn More
 
-1. Import the GitHub repo into Vercel.
-2. In Project Settings -> Environment Variables, add all values from `.env.example`.
-3. In Build & Development Settings, set the build command to:
+To learn more about Next.js, take a look at the following resources:
 
-```bash
-npm run vercel-build
-```
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-4. If your database already contains tables created outside Prisma migrations, do not run `prisma migrate deploy` during Vercel build. This repo already uses a safe build command that skips automatic migrations.
-5. Set the production domain.
-6. Update `NEXTAUTH_URL` to your production domain, for example:
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-```bash
-https://your-domain.am
-```
+## Deploy on Vercel
 
-7. In Google Cloud Console, add these Authorized redirect URIs:
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-```text
-http://localhost:3000/api/auth/callback/google
-https://your-domain.am/api/auth/callback/google
-```
-
-8. Keep `NEXT_PUBLIC_SITE_URL` equal to the same production origin so sitemap, canonical URLs, and Open Graph links point to the real domain.
-
-9. Ensure Vercel uses Node.js 20 for this project, matching the `engines.node` value in `package.json`.
-10. If you want the free `tawk.to` live chat widget, add `NEXT_PUBLIC_TAWK_PROPERTY_ID` and `NEXT_PUBLIC_TAWK_WIDGET_ID` in Vercel as well.
-
-## Tawk chat
-
-The project includes optional support for the `tawk.to` website chat widget.
-
-1. Create a property in `tawk.to`.
-2. Copy the widget code from the `Chat Widget` section in the dashboard.
-3. Take the two parts from the embed URL:
-
-```text
-https://embed.tawk.to/<PROPERTY_ID>/<WIDGET_ID>
-```
-
-4. Add them to `.env`:
-
-```bash
-NEXT_PUBLIC_TAWK_PROPERTY_ID="<PROPERTY_ID>"
-NEXT_PUBLIC_TAWK_WIDGET_ID="<WIDGET_ID>"
-```
-
-If these variables are missing, the chat widget stays disabled.
-
-## Existing database and Prisma
-
-If Prisma shows `P3005`, it means the database is already populated and Prisma migrations were not baselined yet.
-
-For now, deployment can proceed without running migrations in Vercel build.
-
-Later, if you want a fully managed Prisma migration flow, baseline the current production database first and only then use:
-
-```bash
-npm run db:deploy
-```
-
-## Release hardening
-
-- Sign-in now goes through `/auth/signin` and redirects to the localized sign-in page, so production auth does not depend on a hardcoded locale.
-- Job create/update API should be protected by the built-in validation and rate limiting in the repo. Keep the app on the Node.js runtime so the in-memory limiter can work per instance.
-- If any real database or OAuth secrets were previously shared outside your machine, rotate them before launch.
-
-## Useful commands
-
-```bash
-npm run dev
-npm run lint
-npm run db:generate
-npm run db:migrate
-npm run db:deploy
-npm run db:studio
-```
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
