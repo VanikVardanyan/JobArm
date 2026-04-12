@@ -40,10 +40,12 @@ export default function ResumeList({
   resumes,
   pagination,
   activeCategory = "all",
+  showFilters = true,
 }: {
   resumes: Resume[];
   pagination?: Pagination;
   activeCategory?: string;
+  showFilters?: boolean;
 }) {
   const t = useTranslations("resume");
   const tHome = useTranslations("home");
@@ -120,7 +122,7 @@ export default function ResumeList({
       </div>
 
       {/* Category filters */}
-      <div className="flex gap-2 overflow-x-auto pb-2 mb-4">
+      {showFilters && <div className="flex gap-2 overflow-x-auto pb-2 mb-4">
         {CATEGORIES.map((category) => (
           <Link
             key={category}
@@ -134,7 +136,7 @@ export default function ResumeList({
             {tHome(`category.${category}`)}
           </Link>
         ))}
-      </div>
+      </div>}
 
       {/* Grid */}
       {filtered.length === 0 ? (
