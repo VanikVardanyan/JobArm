@@ -1,3 +1,26 @@
 @import "tailwindcss";
 
 @variant dark (&:where(.dark, .dark *));
+
+body {
+  background-color: #f8fafc;
+}
+
+.dark body {
+  background-color: #0a0a0f;
+}
+
+/* subtle grid pattern for hero */
+.hero-grid {
+  background-image:
+    linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.dark .hero-grid {
+  background-image:
+    linear-gradient(rgba(99, 102, 241, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99, 102, 241, 0.06) 1px, transparent 1px);
+  background-size: 32px 32px;
+}

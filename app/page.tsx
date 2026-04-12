@@ -1,32 +1,20 @@
 import { prisma } from "@/lib/prisma";
-import TaskList from "@/components/TaskList";
 import Hero from "@/components/Hero";
+import TrustBar from "@/components/TrustBar";
+import HowItWorks from "@/components/HowItWorks";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const now = new Date();
-  const tasks = await prisma.task.findMany({
-    where: { expiresAt: { gt: now } },
-    orderBy: { createdAt: "desc" },
-    select: {
-      id: true,
-      description: true,
-      budget: true,
-      phone: true,
-      createdAt: true,
-    },
+  const count = await prisma.task.count({
+    where: { expiresAt: { gt: new Date() } },
   });
 
-  const serialized = tasks.map((t) => ({
-    ...t,
-    createdAt: t.createdAt.toISOString(),
-  }));
-
   return (
-    <div className="flex flex-col gap-8">
-      <Hero count={serialized.length} />
-      <TaskList tasks={serialized} />
+    <div className="flex flex-col gap-5 sm:gap-8">
+      <Hero count={count} />
+      <TrustBar />
+      <HowItWorks />
     </div>
   );
 }

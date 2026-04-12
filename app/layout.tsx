@@ -70,7 +70,7 @@ export default async function RootLayout({
           }}
         />
       </head>
-      <body className={`${geist.className} min-h-screen flex flex-col bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100`}>
+      <body className={`${geist.className} min-h-screen flex flex-col bg-slate-50 dark:bg-[#0a0a0f] text-gray-900 dark:text-gray-100`}>
         <LocaleProvider initialLocale={locale} allMessages={allMessages}>
           <Header />
           <main className="flex-1 container mx-auto px-4 py-6 max-w-6xl">

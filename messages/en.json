@@ -5,8 +5,9 @@
   "home": {
     "createButton": "+ Post a task",
     "createButtonShort": "Post a task",
-    "heroTitle": "A quick fix to your problem",
-    "heroSubtitle": "Find someone for a one-off task — no signup, in under a minute",
+    "heroBadge": "Task platform",
+    "heroTitle": "Find a worker for any task in Armenia",
+    "heroSubtitle": "Post a task — workers will contact you directly. No signup, no fees, no middlemen.",
     "activeTasks": "active tasks",
     "noTasks": "No listings yet. Be the first!",
     "myBadge": "My listing",
@@ -20,11 +21,17 @@
     "hoursAgo": "{count}h ago",
     "minutesAgo": "{count}m ago",
     "daysAgo": "{count}d ago",
-    "justNow": "Just now"
+    "justNow": "Just now",
+    "showPhone": "Show phone",
+    "noBudget": "No budget set",
+    "taskListTitle": "Listings",
+    "searchPlaceholder": "Search listings...",
+    "noResults": "Nothing found",
+    "browseTasks": "Browse listings"
   },
   "create": {
     "title": "Post a task",
-    "subtitle": "Describe the task and leave a phone number. Workers will call you.",
+    "subtitle": "This section is for those looking to hire a worker. Describe the task and leave your phone number — workers will call you.",
     "back": "Back",
     "description": "Task description",
     "descriptionPlaceholder": "Describe what needs to be done...",
@@ -47,6 +54,22 @@
     "error": "Error saving.",
     "notFound": "Task not found",
     "unauthorized": "No access to this task"
+  },
+  "trust": {
+    "noSignup": "No registration",
+    "free": "Free",
+    "autoDelete": "Auto-delete in 7 days",
+    "directContact": "Direct contact"
+  },
+  "howItWorks": {
+    "title": "How it works",
+    "stepLabel": "Step",
+    "step1Title": "Describe the task",
+    "step1Desc": "Specify what needs to be done, the budget, and leave your phone number.",
+    "step2Title": "Workers will see it",
+    "step2Desc": "Your listing appears on the board. Interested workers will reach out.",
+    "step3Title": "Agree directly",
+    "step3Desc": "Discuss the details by phone and choose the best worker."
   },
   "footer": {
     "privacy": "Privacy Policy",

@@ -80,43 +80,50 @@ export default function CreatePage() {
   };
 
   return (
-    <div className="max-w-xl mx-auto py-4">
+    <div className="max-w-lg mx-auto py-6">
       <button
         type="button"
         onClick={() => router.back()}
-        className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 mb-6 transition-colors"
+        className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 mb-8 transition-colors"
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <line x1="19" y1="12" x2="5" y2="12" />
           <polyline points="12 19 5 12 12 5" />
         </svg>
         {t("back")}
       </button>
 
-      <h1 className="text-3xl font-extrabold tracking-tight mb-2">{t("title")}</h1>
-      <p className="text-gray-500 dark:text-gray-400 mb-8 text-sm">{t("subtitle")}</p>
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white mb-1.5">
+          {t("title")}
+        </h1>
+        <p className="text-slate-500 dark:text-slate-400 text-sm">{t("subtitle")}</p>
+      </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-5 p-6 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50"
+      >
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+          <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
             {t("description")} <span className="text-red-500">*</span>
           </label>
           <textarea
             required
-            rows={6}
+            rows={5}
             maxLength={DESCRIPTION_MAX}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder={t("descriptionPlaceholder")}
-            className="w-full rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 py-3 text-[15px] resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-shadow"
+            className="w-full rounded-md border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-4 py-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:bg-white dark:focus:bg-slate-900 transition-colors"
           />
-          <div className="text-[11px] text-gray-400 dark:text-gray-600 self-end">
-            {description.length} / {DESCRIPTION_MAX}
+          <div className="text-[11px] text-slate-400 dark:text-slate-500 self-end tabular-nums">
+            {description.length}/{DESCRIPTION_MAX}
           </div>
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+          <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
             {t("budget")}
           </label>
           <div className="relative">
@@ -126,16 +133,16 @@ export default function CreatePage() {
               value={budget}
               onChange={(e) => setBudget(e.target.value)}
               placeholder={t("budgetPlaceholder")}
-              className="w-full rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 py-3 pr-10 text-[15px] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              className="w-full rounded-md border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-4 py-3 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:bg-white dark:focus:bg-slate-900 transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-indigo-500 dark:text-indigo-400 text-lg font-semibold pointer-events-none">
-              ֏
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-indigo-500 dark:text-indigo-400 text-base font-semibold pointer-events-none">
+              &#1423;
             </span>
           </div>
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+          <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
             {t("phone")} <span className="text-red-500">*</span>
           </label>
           <input
@@ -148,12 +155,12 @@ export default function CreatePage() {
               const len = e.target.value.length;
               setTimeout(() => e.target.setSelectionRange(len, len), 0);
             }}
-            className="w-full rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 py-3 text-[15px] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent tracking-wide"
+            className="w-full rounded-md border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:bg-white dark:focus:bg-slate-900 transition-colors tracking-wide"
           />
         </div>
 
         {error && (
-          <div className="p-3 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/60 text-red-700 dark:text-red-400 text-sm">
+          <div className="p-3 rounded-md bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 text-red-700 dark:text-red-400 text-sm">
             {error}
           </div>
         )}
@@ -161,7 +168,7 @@ export default function CreatePage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-sm shadow-indigo-500/20 transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
+          className="w-full py-2.5 rounded-md bg-slate-900 dark:bg-white hover:bg-slate-800 dark:hover:bg-slate-100 text-white dark:text-slate-900 font-semibold text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? t("submitting") : t("submit")}
         </button>
@@ -169,7 +176,7 @@ export default function CreatePage() {
 
       {toast && (
         <Toast
-          message={"✅ " + toast}
+          message={toast}
           onDone={() => {
             setToast(null);
             router.push("/");
