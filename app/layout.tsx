@@ -6,6 +6,7 @@ import LocaleProvider from "@/components/LocaleProvider";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Analytics from "@/components/Analytics";
+import GaRouteTracker from "@/components/GaRouteTracker";
 import CrispWidget from "@/components/CrispWidget";
 
 import hyMessages from "@/messages/hy.json";
@@ -63,7 +64,6 @@ export default async function RootLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
-        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var t=localStorage.getItem('jobarm_theme');if(t==='dark')document.documentElement.classList.add('dark');}catch(e){}})();`,
@@ -79,6 +79,7 @@ export default async function RootLayout({
           <Footer />
         </LocaleProvider>
         <Analytics />
+        <GaRouteTracker />
         <CrispWidget />
       </body>
     </html>

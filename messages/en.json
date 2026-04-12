@@ -1,13 +1,14 @@
 {
   "header": {
-    "title": "Jobarm"
+    "title": "Jobarm",
+    "account": "Account"
   },
   "home": {
     "createButton": "+ Post a task",
     "createButtonShort": "Post a task",
     "heroBadge": "Task platform",
     "heroTitle": "Find a worker for any task in Armenia",
-    "heroSubtitle": "Post a task — workers will contact you directly. No signup, no fees, no middlemen.",
+    "heroSubtitle": "Post a task — workers will contact you directly. Verified by phone, with no fees or middlemen.",
     "activeTasks": "active tasks",
     "noTasks": "No listings yet. Be the first!",
     "myBadge": "My listing",
@@ -27,7 +28,18 @@
     "taskListTitle": "Listings",
     "searchPlaceholder": "Search listings...",
     "noResults": "Nothing found",
-    "browseTasks": "Browse listings"
+    "browseTasks": "Browse listings",
+    "pagination": "Pagination",
+    "prevPage": "Previous",
+    "nextPage": "Next",
+    "category": {
+      "all": "All",
+      "loader": "Loader",
+      "restaurant_food": "Restaurant/food",
+      "services": "Services",
+      "craft": "Craft",
+      "other": "Other"
+    }
   },
   "create": {
     "title": "Post a task",
@@ -37,12 +49,33 @@
     "descriptionPlaceholder": "Describe what needs to be done...",
     "budget": "Budget (֏)",
     "budgetPlaceholder": "e.g. 5000",
+    "category": "Category",
+    "categoryLoader": "Loader",
+    "categoryRestaurantFood": "Restaurant/food",
+    "categoryServices": "Services",
+    "categoryCraft": "Craft",
+    "categoryOther": "Other",
     "phone": "Phone",
     "phonePlaceholder": "+374 XX XXX XXX",
+    "authTitle": "Verify your phone",
+    "authPrompt": "Your listing is saved as a draft. Verify your phone number to publish it.",
+    "close": "Close",
+    "code": "SMS code",
+    "codePlaceholder": "Enter the code",
+    "codeSent": "We sent an SMS code to this number.",
+    "sendCode": "Get SMS code",
+    "sendingCode": "Sending code...",
+    "savingDraft": "Saving listing...",
+    "verifyAndPublish": "Verify and publish",
+    "verifying": "Checking code...",
     "submit": "Publish",
     "submitting": "Publishing...",
     "success": "Task published!",
     "phoneError": "Enter a complete phone number",
+    "codeError": "Could not verify the phone number. Check the code and try again.",
+    "codeLockError": "Too many wrong codes. Try again tomorrow.",
+    "smsLimitError": "Today's SMS limit is reached. Please try later.",
+    "cooldownError": "The code was already sent. Wait a minute and try again.",
     "limitError": "Maximum 3 active listings per phone number",
     "error": "Error publishing. Please try again."
   },
@@ -55,8 +88,14 @@
     "notFound": "Task not found",
     "unauthorized": "No access to this task"
   },
+  "account": {
+    "title": "My listings",
+    "loginHint": "Log in by phone while creating a listing, and your account will appear here.",
+    "create": "Create listing",
+    "logout": "Log out"
+  },
   "trust": {
-    "noSignup": "No registration",
+    "noSignup": "Phone login",
     "free": "Free",
     "autoDelete": "Auto-delete in 7 days",
     "directContact": "Direct contact"

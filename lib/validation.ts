@@ -2,6 +2,21 @@ export const DESCRIPTION_MAX = 1000;
 export const BUDGET_MAX = 100_000_000;
 export const MAX_ACTIVE_PER_PHONE = 3;
 export const TASK_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+export const PENDING_TASK_TTL_MS = 24 * 60 * 60 * 1000;
+
+export const TASK_CATEGORIES = [
+  "loader",
+  "restaurant_food",
+  "services",
+  "craft",
+  "other",
+] as const;
+
+export type TaskCategory = (typeof TASK_CATEGORIES)[number];
+
+export function isTaskCategory(value: unknown): value is TaskCategory {
+  return typeof value === "string" && TASK_CATEGORIES.includes(value as TaskCategory);
+}
 
 /**
  * Normalize an Armenian phone number to canonical +374XXXXXXXX form.
@@ -21,20 +36,24 @@ export function normalizePhone(input: string): string | null {
 
 export type TaskInputErrors = {
   description?: string;
+  category?: string;
   budget?: string;
   phone?: string;
 };
 
 export function validateTaskInput(raw: {
   description?: unknown;
+  category?: unknown;
   budget?: unknown;
   phone?: unknown;
-}): { ok: true; data: { description: string; budget: number | null; phone: string } } | { ok: false; errors: TaskInputErrors } {
+}): { ok: true; data: { description: string; category: TaskCategory; budget: number | null; phone: string } } | { ok: false; errors: TaskInputErrors } {
   const errors: TaskInputErrors = {};
 
   const description = typeof raw.description === "string" ? raw.description.trim() : "";
   if (!description) errors.description = "required";
   else if (description.length > DESCRIPTION_MAX) errors.description = "too_long";
+
+  const category = isTaskCategory(raw.category) ? raw.category : "other";
 
   let budget: number | null = null;
   if (raw.budget !== undefined && raw.budget !== null && raw.budget !== "") {
@@ -48,5 +67,20 @@ export function validateTaskInput(raw: {
   if (!normalized) errors.phone = "invalid";
 
   if (Object.keys(errors).length > 0) return { ok: false, errors };
-  return { ok: true, data: { description, budget, phone: normalized! } };
+  return { ok: true, data: { description, category, budget, phone: normalized! } };
+}
+
+export function validateTaskDraftInput(raw: {
+  description?: unknown;
+  category?: unknown;
+  budget?: unknown;
+}): { ok: true; data: { description: string; category: TaskCategory; budget: number | null } } | { ok: false; errors: TaskInputErrors } {
+  const result = validateTaskInput({ ...raw, phone: "+37499000000" });
+  if (!result.ok) {
+    const errors = { ...result.errors };
+    delete errors.phone;
+    return { ok: false, errors };
+  }
+  const { description, category, budget } = result.data;
+  return { ok: true, data: { description, category, budget } };
 }

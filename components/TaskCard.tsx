@@ -4,11 +4,13 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { getToken, removeToken } from "@/lib/tokens";
+import { trackEvent } from "@/lib/analytics";
 import ConfirmModal from "./ConfirmModal";
 
 type Task = {
   id: string;
   description: string;
+  category: string;
   budget: number | null;
   phone: string;
   createdAt: string;
@@ -48,10 +50,6 @@ export default function TaskCard({ task, isMine }: { task: Task; isMine: boolean
 
   const handleDelete = async () => {
     const token = getToken(task.id);
-    if (!token) {
-      setConfirmOpen(false);
-      return;
-    }
     setDeleting(true);
     const res = await fetch(`/api/tasks/${task.id}`, {
       method: "DELETE",
@@ -59,11 +57,12 @@ export default function TaskCard({ task, isMine }: { task: Task; isMine: boolean
       body: JSON.stringify({ manageToken: token }),
     });
     if (res.ok) {
+      trackEvent("task_delete");
       removeToken(task.id);
       router.refresh();
+      setConfirmOpen(false);
     }
     setDeleting(false);
-    setConfirmOpen(false);
   };
 
   return (
@@ -82,6 +81,9 @@ export default function TaskCard({ task, isMine }: { task: Task; isMine: boolean
               {t("myBadge")}
             </span>
           )}
+          <span className="inline-flex items-center rounded bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 text-[10px] font-medium text-slate-500 dark:text-slate-400">
+            {t(`category.${task.category}`)}
+          </span>
           {task.budget ? (
             <span className="text-lg font-bold text-slate-900 dark:text-white tabular-nums">
               {task.budget.toLocaleString("ru-RU")}
@@ -122,6 +124,9 @@ export default function TaskCard({ task, isMine }: { task: Task; isMine: boolean
         {showPhone ? (
           <a
             href={`tel:${task.phone}`}
+            onClick={() =>
+              trackEvent("task_contact_call", { is_mine: isMine })
+            }
             className="w-full flex items-center justify-center gap-2 py-2 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -132,7 +137,10 @@ export default function TaskCard({ task, isMine }: { task: Task; isMine: boolean
         ) : (
           <button
             type="button"
-            onClick={() => setShowPhone(true)}
+            onClick={() => {
+              trackEvent("task_contact_reveal", { is_mine: isMine });
+              setShowPhone(true);
+            }}
             className="w-full flex items-center justify-center gap-2 py-2 rounded-md bg-slate-900 dark:bg-white hover:bg-slate-800 dark:hover:bg-slate-100 text-white dark:text-slate-900 text-sm font-medium transition-colors"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -146,7 +154,10 @@ export default function TaskCard({ task, isMine }: { task: Task; isMine: boolean
           <div className="flex gap-2">
             <button
               type="button"
-              onClick={() => router.push(`/edit/${task.id}`)}
+              onClick={() => {
+                trackEvent("task_edit_start");
+                router.push(`/edit/${task.id}`);
+              }}
               aria-label={t("edit")}
               className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-md border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 text-xs font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
             >

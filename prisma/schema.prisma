@@ -11,9 +11,68 @@ datasource db {
 model Task {
   id           String   @id @default(uuid())
   description  String
+  category     String   @default("other")
   budget       Int?
   phone        String
+  userId       String?
   manageToken  String   @unique
   createdAt    DateTime @default(now())
   expiresAt    DateTime
+
+  user         User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([phone])
+  @@index([userId])
+  @@index([category, createdAt])
+}
+
+model User {
+  id              String    @id @default(uuid())
+  phone           String    @unique
+  phoneVerifiedAt DateTime?
+  createdAt       DateTime  @default(now())
+  tasks           Task[]
+  sessions        Session[]
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  tokenHash String   @unique
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model SmsSendLog {
+  id        String   @id @default(uuid())
+  phone     String
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@index([phone, createdAt])
+  @@index([ip, createdAt])
+  @@index([createdAt])
+}
+
+model AuthFailureLog {
+  id        String   @id @default(uuid())
+  phone     String
+  createdAt DateTime @default(now())
+
+  @@index([phone, createdAt])
+}
+
+model PendingTask {
+  id          String   @id @default(uuid())
+  description String
+  category    String   @default("other")
+  budget      Int?
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime
+
+  @@index([expiresAt])
 }

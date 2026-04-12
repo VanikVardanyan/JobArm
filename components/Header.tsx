@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { trackEvent } from "@/lib/analytics";
 import { useLocale } from "./LocaleProvider";
 
 const LOCALES = [
@@ -18,7 +19,10 @@ export default function Header() {
 
   useEffect(() => {
     const theme = localStorage.getItem("jobarm_theme") || "light";
-    setThemeState({ isDark: theme === "dark", mounted: true });
+    const timer = window.setTimeout(() => {
+      setThemeState({ isDark: theme === "dark", mounted: true });
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, []);
 
   const { isDark, mounted } = themeState;
@@ -28,6 +32,7 @@ export default function Header() {
     setThemeState({ isDark: !isDark, mounted: true });
     localStorage.setItem("jobarm_theme", next);
     document.documentElement.classList.toggle("dark", next === "dark");
+    trackEvent("theme_toggle", { theme: next });
   };
 
   return (
@@ -53,7 +58,10 @@ export default function Header() {
             {LOCALES.map((loc) => (
               <button
                 key={loc.code}
-                onClick={() => setLocale(loc.code)}
+                onClick={() => {
+                  trackEvent("locale_change", { locale: loc.code });
+                  setLocale(loc.code);
+                }}
                 className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
                   locale === loc.code
                     ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/50"
@@ -68,7 +76,11 @@ export default function Header() {
           {/* Language switcher - mobile */}
           <select
             value={locale}
-            onChange={(e) => setLocale(e.target.value as typeof locale)}
+            onChange={(e) => {
+              const code = e.target.value as typeof locale;
+              trackEvent("locale_change", { locale: code });
+              setLocale(code);
+            }}
             className="sm:hidden text-xs font-medium bg-transparent border border-slate-200 dark:border-slate-700 rounded px-2 py-1.5 text-slate-600 dark:text-slate-300"
             aria-label="Language"
           >
@@ -78,6 +90,15 @@ export default function Header() {
               </option>
             ))}
           </select>
+
+          {/* Theme toggle */}
+          <Link
+            href="/account"
+            onClick={() => trackEvent("cta_click", { location: "header", target: "account" })}
+            className="hidden sm:inline-flex items-center px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+          >
+            {t("header.account")}
+          </Link>
 
           {/* Theme toggle */}
           <button
@@ -113,6 +134,9 @@ export default function Header() {
           {/* CTA */}
           <Link
             href="/create"
+            onClick={() =>
+              trackEvent("cta_click", { location: "header", target: "create" })
+            }
             className="ml-1 inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

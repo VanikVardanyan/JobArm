@@ -2,8 +2,9 @@
 
 import { useTranslations } from "next-intl";
 import { useRouter, useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getToken } from "@/lib/tokens";
+import { trackEvent } from "@/lib/analytics";
 import Toast from "@/components/Toast";
 
 const DESCRIPTION_MAX = 1000;
@@ -16,20 +17,17 @@ export default function EditPage() {
   const id = params.id;
 
   const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("other");
   const [budget, setBudget] = useState("");
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(true);
   const [toast, setToast] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [fatalError, setFatalError] = useState<string | null>(null);
+  const trackedEditView = useRef(false);
 
   useEffect(() => {
     const token = getToken(id);
-    if (!token) {
-      setFatalError(tEdit("unauthorized"));
-      setFetchLoading(false);
-      return;
-    }
 
     fetch(`/api/tasks/${id}`)
       .then((res) => {
@@ -37,9 +35,19 @@ export default function EditPage() {
         return res.json();
       })
       .then((data) => {
+        if (!token && !data.canEdit) {
+          setFatalError(tEdit("unauthorized"));
+          setFetchLoading(false);
+          return;
+        }
         setDescription(data.description);
+        setCategory(data.category ?? "other");
         setBudget(data.budget?.toString() ?? "");
         setFetchLoading(false);
+        if (!trackedEditView.current) {
+          trackedEditView.current = true;
+          trackEvent("task_edit_view");
+        }
       })
       .catch(() => {
         setFatalError(tEdit("notFound"));
@@ -51,21 +59,24 @@ export default function EditPage() {
     e.preventDefault();
     setError(null);
     const token = getToken(id);
-    if (!token) return;
 
     setLoading(true);
     const res = await fetch(`/api/tasks/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ description, budget, manageToken: token }),
+      body: JSON.stringify({ description, category, budget, manageToken: token }),
     });
     setLoading(false);
 
     if (!res.ok) {
+      trackEvent("task_update_failed");
       setError(tEdit("error"));
       return;
     }
 
+    trackEvent("task_updated", {
+      has_budget: Boolean(budget.trim() && Number(budget) > 0),
+    });
     setToast(tEdit("success"));
   };
 
@@ -147,6 +158,23 @@ export default function EditPage() {
               ֏
             </span>
           </div>
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+            {tCreate("category")}
+          </label>
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="w-full rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 py-3 text-[15px] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+          >
+            <option value="loader">{tCreate("categoryLoader")}</option>
+            <option value="restaurant_food">{tCreate("categoryRestaurantFood")}</option>
+            <option value="services">{tCreate("categoryServices")}</option>
+            <option value="craft">{tCreate("categoryCraft")}</option>
+            <option value="other">{tCreate("categoryOther")}</option>
+          </select>
         </div>
 
         {error && (
