@@ -76,3 +76,41 @@ model PendingTask {
 
   @@index([expiresAt])
 }
+
+model GoogleUser {
+  id        String          @id @default(uuid())
+  googleId  String          @unique
+  email     String          @unique
+  name      String?
+  picture   String?
+  createdAt DateTime        @default(now())
+  sessions  GoogleSession[]
+  resumes   Resume[]
+}
+
+model GoogleSession {
+  id           String     @id @default(uuid())
+  googleUserId String
+  tokenHash    String     @unique
+  createdAt    DateTime   @default(now())
+  expiresAt    DateTime
+
+  googleUser   GoogleUser @relation(fields: [googleUserId], references: [id], onDelete: Cascade)
+
+  @@index([googleUserId])
+}
+
+model Resume {
+  id           String     @id @default(uuid())
+  description  String
+  category     String     @default("other")
+  phone        String?
+  googleUserId String
+  createdAt    DateTime   @default(now())
+  expiresAt    DateTime
+
+  googleUser   GoogleUser @relation(fields: [googleUserId], references: [id], onDelete: Cascade)
+
+  @@index([googleUserId])
+  @@index([category, createdAt])
+}
