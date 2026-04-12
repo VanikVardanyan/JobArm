@@ -76,7 +76,7 @@
   "trust": {
     "noSignup": "Առանց գրանցման",
     "free": "Անվճար",
-    "autoDelete": "Ջնջում 7 օրում",
+    "autoDelete": "7-օրյա ժամկետով",
     "directContact": "Ուղղակի կապ"
   },
   "howItWorks": {
