@@ -69,7 +69,7 @@ export default function Hero() {
             {t("browseTasks")}
           </Link>
           <Link
-            href={"/resumes/create" as "/resumes/create"}
+            href={"/resumes/create" as const}
             onClick={() =>
               trackEvent("cta_click", { location: "hero", target: "create_resume" })
             }
@@ -78,7 +78,7 @@ export default function Hero() {
             {tResume("createButton")}
           </Link>
           <Link
-            href={"/resumes" as "/resumes"}
+            href={"/resumes" as const}
             onClick={() =>
               trackEvent("cta_click", { location: "hero", target: "resumes" })
             }

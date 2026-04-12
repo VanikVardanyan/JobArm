@@ -78,7 +78,7 @@ export default function Header() {
 
           {/* Resumes link */}
           <Link
-            href={"/resumes" as "/resumes"}
+            href={"/resumes" as const}
             onClick={() => trackEvent("cta_click", { location: "header", target: "resumes" })}
             className="inline-flex items-center px-3 py-1.5 rounded-lg border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 text-sm font-medium hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-colors"
           >
@@ -97,7 +97,7 @@ export default function Header() {
           {/* Theme toggle */}
           <button
             onClick={toggleTheme}
-            className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="w-9 h-9 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 sm:border-transparent text-slate-500 dark:text-slate-300 hover:text-slate-700 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             aria-label="Toggle theme"
           >
             {mounted ? (
@@ -155,6 +155,35 @@ export default function Header() {
               <line x1="5" y1="12" x2="19" y2="12" />
             </svg>
           </Link>
+          <button
+            onClick={toggleTheme}
+            className="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-300 hover:text-slate-700 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            aria-label="Toggle theme"
+          >
+            {mounted ? (
+              isDark ? (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="5" />
+                  <line x1="12" y1="1" x2="12" y2="3" />
+                  <line x1="12" y1="21" x2="12" y2="23" />
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                  <line x1="1" y1="12" x2="3" y2="12" />
+                  <line x1="21" y1="12" x2="23" y2="12" />
+                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                </svg>
+              ) : (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                </svg>
+              )
+            ) : (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+            )}
+          </button>
           <button
             onClick={() => setMenuOpen(true)}
             className="w-9 h-9 flex items-center justify-center rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
@@ -225,7 +254,7 @@ export default function Header() {
               <div className="h-px bg-slate-200 dark:bg-slate-800 my-2" />
 
               <Link
-                href={"/resumes/create" as "/resumes/create"}
+                href={"/resumes/create" as const}
                 onClick={() => { setMenuOpen(false); trackEvent("cta_click", { location: "mobile_menu", target: "create_resume" }); }}
                 className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-colors"
               >
@@ -236,7 +265,7 @@ export default function Header() {
                 {tResume("createButton")}
               </Link>
               <Link
-                href={"/resumes" as "/resumes"}
+                href={"/resumes" as const}
                 onClick={() => { setMenuOpen(false); trackEvent("cta_click", { location: "mobile_menu", target: "resumes" }); }}
                 className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-colors"
               >
@@ -264,8 +293,8 @@ export default function Header() {
               </Link>
             </div>
 
-            {/* Bottom: language + theme */}
-            <div className="mt-auto p-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+            {/* Bottom: language */}
+            <div className="mt-auto p-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-center">
               <div className="flex items-center gap-1">
                 {LOCALES.map((loc) => (
                   <button
@@ -284,35 +313,6 @@ export default function Header() {
                   </button>
                 ))}
               </div>
-              <button
-                onClick={toggleTheme}
-                className="w-9 h-9 flex items-center justify-center rounded-lg text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                aria-label="Toggle theme"
-              >
-                {mounted ? (
-                  isDark ? (
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="5" />
-                      <line x1="12" y1="1" x2="12" y2="3" />
-                      <line x1="12" y1="21" x2="12" y2="23" />
-                      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-                      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-                      <line x1="1" y1="12" x2="3" y2="12" />
-                      <line x1="21" y1="12" x2="23" y2="12" />
-                      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-                      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-                    </svg>
-                  ) : (
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-                    </svg>
-                  )
-                ) : (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-                  </svg>
-                )}
-              </button>
             </div>
           </nav>
         </div>
